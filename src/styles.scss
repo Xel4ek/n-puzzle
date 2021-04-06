@@ -1,1 +1,9 @@
-/* You can add global styles to this file, and also import other style files */
+@import "vendor/styles/clear.css";
+@font-face {
+  font-family: 'Roboto', sans-serif;
+  src: url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');
+}
+body, html {
+  font-family: 'Roboto', sans-serif;
+  font-size: 16px;
+}

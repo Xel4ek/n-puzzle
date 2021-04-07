@@ -37,12 +37,22 @@ export class NPuzzleSolver {
   }
 
   solve(): NPuzzleSolverReport<NPuzzle> {
+    if (!this.factory) {
+      throw new Error('NPuzzle unsolved');
+    }
     console.warn('Start');
     const holder = new Set<string>();
     const sourceNode = this.factory.init();
-    this.priorityQueue.insert(sourceNode.score + sourceNode.predict, sourceNode);
+    this.priorityQueue.insert(
+      sourceNode.score + sourceNode.predict,
+      sourceNode
+    );
     let destroy = 0;
-    for (let entity = this.priorityQueue.pop(); entity; entity = this.priorityQueue.pop()) {
+    for (
+      let entity = this.priorityQueue.pop();
+      entity;
+      entity = this.priorityQueue.pop()
+    ) {
       destroy++;
       if (destroy > 16000000) {
         console.log(this.priorityQueue.size);
@@ -73,7 +83,7 @@ export class NPuzzleSolver {
           console.log(entity);
           break;
         }
-        this.factory.produce(entity).map(child => {
+        this.factory.produce(entity).map((child) => {
           this.priorityQueue.insert(child.score + child.predict, child);
         });
       }

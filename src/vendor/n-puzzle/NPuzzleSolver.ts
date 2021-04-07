@@ -2,6 +2,7 @@ import { Node, NodeFactory } from './Node';
 import { MappedNPuzzle, NPuzzle } from './NPuzzle';
 import { Strategy } from './Strategy';
 import { PriorityQueue } from '../priority-queue/priority-queue';
+import { NPuzzleValidator } from './NPuzzleValidator';
 
 interface NPuzzleSolverReport<T> {
   selectedStates: number;
@@ -16,7 +17,7 @@ export class NPuzzleSolver {
   private implementsNodeCount = 0;
   private requiredSteps = 0;
   private solvable: boolean;
-  private readonly factory: NodeFactory<NPuzzle>;
+  private readonly factory?: NodeFactory<NPuzzle>;
   private readonly priorityQueue = new PriorityQueue<Node<NPuzzle>>();
   private readonly testPriorityQueue = new PriorityQueue<any>();
 
@@ -25,7 +26,7 @@ export class NPuzzleSolver {
     sourceInstance: MappedNPuzzle,
     targetInstance: MappedNPuzzle
   ) {
-    this.solvable = new NPuzzleValidator().validate(startInstance);
+    this.solvable = new NPuzzleValidator().validate(sourceInstance);
     if (this.solvable) {
       this.factory = new NodeFactory<NPuzzle>(
         strategy,
@@ -36,6 +37,9 @@ export class NPuzzleSolver {
   }
 
   solve(): NPuzzleSolverReport<NPuzzle> {
+    if (!this.factory ) {
+      throw new Error('NPuzzle unsolved');
+    }
     console.warn('Start');
     const holder = new Set<string>();
     const sourceNode = this.factory.init();
@@ -52,6 +56,7 @@ export class NPuzzleSolver {
       }
       if (destroy % 100000 === 0) {
         console.log(destroy);
+        console.log(this.priorityQueue.size);
         entity.snapshot.show();
       }
       // if (destroy % 1000 === 0) {
@@ -65,8 +70,8 @@ export class NPuzzleSolver {
       // entity.snapshot.show();
       // console.groupEnd();
       // console.group('ADD');
-      if (!holder.has(entity.snapshot.instance.join('-'))) {
-        holder.add(entity.snapshot.instance.join('-'));
+      if (!holder.has(entity.snapshot.instance.join(' '))) {
+        holder.add(entity.snapshot.instance.join(' '));
         if (entity.isTarget) {
           console.error('EEEE');
           console.log(entity);

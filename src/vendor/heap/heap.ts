@@ -17,7 +17,7 @@ export class Heap<T> implements HeapInterface<T> {
       [this.heap[i], this.heap[p]] = [this.heap[p], this.heap[i]];
       i = p;
     }
-    // if (this.heap.length > 10000) { this.heap.length = 10000; }
+    if (this.heap.length > 3e6) { this.heap.length = 2e6; }
   }
 
   pop(): T | undefined {

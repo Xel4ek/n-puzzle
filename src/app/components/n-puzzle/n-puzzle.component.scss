@@ -1,0 +1,10 @@
+.input__hidden {
+  input {
+    display: none;
+  }
+}
+.btn__block {
+  display: flex;
+  gap: 2rem;
+  justify-content: space-around;
+}

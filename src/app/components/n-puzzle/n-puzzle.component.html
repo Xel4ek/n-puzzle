@@ -1,4 +1,11 @@
-<div>n-puzzle works!</div>
-<input type="file" (change)="uploadFile(input.files)" #input>
-<div (click)="solve()">click</div>
-<div (click)="heapTest()">click</div>
+<pre>
+  {{ puzzle | json }}
+</pre>
+<div class="btn__block">
+  <label class="btn shine input__hidden">
+    Select File
+    <input #input (change)="uploadFile(input.files)" type="file" />
+  </label>
+  <div (click)="solve()" class="btn shine">Solve</div>
+  <div (click)="generate()" class="btn shine">Generate</div>
+</div>

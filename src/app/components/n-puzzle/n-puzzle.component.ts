@@ -5,6 +5,7 @@ import { Strategy } from '../../../vendor/n-puzzle/Strategy';
 import { MappedNPuzzle, NPuzzle } from '../../../vendor/n-puzzle/NPuzzle';
 import { Point } from '../../../vendor/n-puzzle/Point';
 import { NPuzzleSolver } from '../../../vendor/n-puzzle/NPuzzleSolver';
+import { NPuzzleGenerator } from '../../../vendor/n-puzzle/NPuzzleGenerator';
 
 @Component({
   selector: 'app-n-puzzle',
@@ -12,7 +13,7 @@ import { NPuzzleSolver } from '../../../vendor/n-puzzle/NPuzzleSolver';
   styleUrls: ['./n-puzzle.component.scss'],
 })
 export class NPuzzleComponent implements OnInit {
-  private readonly holder = [];
+  puzzle: any;
 
   constructor(private readonly zone: NgZone) {
   }
@@ -135,7 +136,8 @@ export class NPuzzleComponent implements OnInit {
       successors: (snapshot: NPuzzle) => produce(snapshot),
       isGoal: (snapshot, goal: MappedNPuzzle) => taxicabH(snapshot, goal) === 0,
     });
-    const sourceInstance = new MappedNPuzzle(3, [7, 2, 3, 1, 8, 4, 6, 5, 0]);
+    const sourceInstance = this.puzzle;
+      // new MappedNPuzzle(3, [7, 2, 3, 1, 8, 4, 6, 5, 0]);
     // const sourceInstance = new MappedNPuzzle(3, [3, 1, 2, 5, 4, 7, 0, 6, 8,]);
     // const sourceInstance = new MappedNPuzzle(4, [5, 11, 15, 12,
     //   4, 13, 8, 10,
@@ -153,7 +155,7 @@ export class NPuzzleComponent implements OnInit {
     //   2, 24, 0, 21, 22,
     //   5, 19, 14, 20, 9,
     //   7, 1, 3, 13, 12,]);
-    const targetInstance = new MappedNPuzzle(3, [1, 2, 3, 4, 5, 6, 7, 8, 0]);
+    const targetInstance = new MappedNPuzzle(this.puzzle.size, [...this.puzzle.instance].sort());
     // const targetInstance = new MappedNPuzzle(4, [
     //   1, 2, 3, 4,
     //   5, 6, 7, 8,
@@ -172,13 +174,22 @@ export class NPuzzleComponent implements OnInit {
     const solver = new NPuzzleSolver(strategy, sourceInstance, targetInstance);
     // console.log(strategy);
     // console.log(solver);
+    // tslint:disable-next-line:no-console
+    console.time('start');
     this.zone.runOutsideAngular(() => {
+      console.profile('solve');
       const result = solver.solve();
+      console.profileEnd('solve');
       console.log(result);
     });
+    // tslint:disable-next-line:no-console
+    console.timeEnd('start');
     // const result = solver.test();
   }
 
   heapTest(): void {
+  }
+  generate(): void {
+    this.puzzle = new NPuzzleGenerator(4).generate();
   }
 }

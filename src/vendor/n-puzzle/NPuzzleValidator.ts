@@ -1,36 +1,31 @@
 import { NPuzzle } from './NPuzzle';
 
 export class NPuzzleValidator {
-  validate(startInstance: NPuzzle): boolean {
-    const inversions = this.countInversions(startInstance.instance);
-    const blankRow =
-      startInstance.size -
-      Math.floor(startInstance.instance.indexOf(0) / startInstance.size);
-    console.log(blankRow);
-    if (
-      startInstance.size % 2 === 0 &&
-      ((blankRow % 2 === 0 && inversions % 2 === 1) ||
-        (blankRow % 2 === 1 && inversions % 2 === 0))
-    ) {
-      return true;
-    } else {
-      if (inversions % 2 === 0) {
-        return true;
-      }
+  validate(startInstanceOrInstance: NPuzzle | number[]): boolean {
+    if (startInstanceOrInstance instanceof NPuzzle) {
+      return this.validateInstance(startInstanceOrInstance.instance);
     }
-    return false;
+    return this.validateInstance(startInstanceOrInstance);
+  }
+
+  private validateInstance(instance: number[]): boolean {
+    const size = Math.trunc(Math.sqrt(instance.length));
+    const inversions = this.countInversions(instance);
+    const blankRow = 1 + Math.trunc(instance.indexOf(0) / size);
+    // console.log(blankRow);
+    return !!((inversions + blankRow) % 2);
   }
 
   private countInversions(array: number[]): number {
     let count = 0;
     for (let i = 0; i < array.length - 1; i++) {
       for (let j = i + 1; j < array.length; j++) {
-        if (array[j] && array[i] && array[i] > array[j]) {
+        if (array[i] > array[j]) {
           count++;
         }
       }
     }
-    console.log(count);
+    // console.log(count);
     return count;
   }
 }

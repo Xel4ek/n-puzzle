@@ -8,7 +8,6 @@ interface NPuzzleSolverReport<T> {
   selectedStates: number;
   implementsNodeCount: number;
   requiredSteps: number;
-  // history: Observable<T>;
   solvable: boolean;
 }
 
@@ -19,7 +18,6 @@ export class NPuzzleSolver {
   private solvable: boolean;
   private readonly factory?: NodeFactory<NPuzzle>;
   private readonly priorityQueue = new PriorityQueue<Node<NPuzzle>>();
-  private readonly testPriorityQueue = new PriorityQueue<any>();
 
   constructor(
     strategy: Strategy<NPuzzle>,
@@ -76,21 +74,20 @@ export class NPuzzleSolver {
       // entity.snapshot.show();
       // console.groupEnd();
       // console.group('ADD');
-      if (!holder.has(entity.snapshot.instance.join('-'))) {
-        holder.add(entity.snapshot.instance.join('-'));
-        if (entity.isTarget) {
-          console.error('EEEE');
-          console.log(entity);
-          break;
-        }
-        this.factory.produce(entity).map((child) => {
-          this.priorityQueue.insert(child.score + child.predict, child);
-        });
+      holder.add(entity.snapshot.instance.join(' '));
+      if (entity.isTarget) {
+        console.error('EEEE');
+        console.log(entity);
+        break;
       }
+      this.factory.produce(entity).map((child) => {
+        if (!holder.has(child.snapshot.instance.join(' '))) {
+          this.priorityQueue.insert(child.score + child.predict, child);
+        }
+      });
       // console.groupEnd();
     }
     console.error('FINISH');
-    console.error(holder.has('1-2-3-4-5-6-7-8-0'));
     console.log(holder);
     return {
       selectedStates: this.selectedStates,

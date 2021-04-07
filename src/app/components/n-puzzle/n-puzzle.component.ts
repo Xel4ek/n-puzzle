@@ -194,6 +194,6 @@ export class NPuzzleComponent implements OnInit {
   heapTest(): void {
   }
   generate(): void {
-    this.puzzle = new NPuzzleGenerator(4).generate();
+    this.puzzle = new NPuzzleGenerator(3).generate();
   }
 }

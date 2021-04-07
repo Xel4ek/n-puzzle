@@ -1,17 +1,10 @@
-import { Component, OnInit } from '@angular/core';
-import { EMPTY, from, fromEvent, Observable, of } from 'rxjs';
-import {
-  expand,
-  filter,
-  first,
-  map,
-  mergeMap,
-  take,
-  tap,
-} from 'rxjs/operators';
-import { NPuzzleSolver } from '../../../vendor/n-puzzle/NPuzzleSolver';
+import { Component, NgZone, OnInit } from '@angular/core';
+import { fromEvent } from 'rxjs';
+import { filter, first, map, mergeMap, tap } from 'rxjs/operators';
 import { Strategy } from '../../../vendor/n-puzzle/Strategy';
 import { MappedNPuzzle, NPuzzle } from '../../../vendor/n-puzzle/NPuzzle';
+import { Point } from '../../../vendor/n-puzzle/Point';
+import { NPuzzleSolver } from '../../../vendor/n-puzzle/NPuzzleSolver';
 
 @Component({
   selector: 'app-n-puzzle',
@@ -19,7 +12,9 @@ import { MappedNPuzzle, NPuzzle } from '../../../vendor/n-puzzle/NPuzzle';
   styleUrls: ['./n-puzzle.component.scss'],
 })
 export class NPuzzleComponent implements OnInit {
-  constructor() {
+  private readonly holder = [];
+
+  constructor(private readonly zone: NgZone) {
   }
 
   ngOnInit(): void {
@@ -56,22 +51,134 @@ export class NPuzzleComponent implements OnInit {
 
   solve(): void {
     const taxicabH = (lhs: NPuzzle, rhs: MappedNPuzzle): number => {
-      const size = lhs.size;
-      return rhs.instance.reduce((acc, cur, index) => acc + (index + 1) % size + Math.floor((index + 1) / size ));
+      const size = rhs.size;
+      // let predict = 0;
+      // lhs.instance.map((cur, index) => {
+      //   const point = rhs.mapInstance.get(cur);
+      //   if (point) {
+      //     const { row, col } = point;
+      //     predict +=
+      //       Math.abs((index % size) - col) +
+      //       Math.abs(Math.trunc(index / size) - row);
+      //   }
+      // });
+      // return predict;
+      return lhs.instance.reduce((acc, cur, index) => {
+        const point = rhs.mapInstance.get(cur);
+        if (point) {
+          const {row, col} = point;
+          return (
+            acc +
+            Math.abs((index % size) - col) +
+            Math.abs(Math.floor(index / size) - row)
+          );
+        }
+        return acc;
+      }, 0);
     };
 
+    const generate = (
+      snapshot: NPuzzle,
+      drow: number,
+      dcol: number
+    ): NPuzzle | undefined => {
+      const newRow = snapshot.pivot.row + drow;
+      const newCol = snapshot.pivot.col + dcol;
+      const size = snapshot.size;
+      if (
+        newRow >= size ||
+        newRow < 0 ||
+        newCol >= size ||
+        newCol < 0 ||
+        (newCol === snapshot.lastModified?.col &&
+          newRow === snapshot.lastModified?.row)
+      ) {
+        return;
+      }
+      const newIndex = newRow * size + newCol;
+      const instance = [...snapshot.instance];
+      [instance[newIndex], instance[snapshot.pivot.index]] = [
+        instance[snapshot.pivot.index],
+        instance[newIndex],
+      ];
+      return new NPuzzle(
+        snapshot.size,
+        instance,
+        new Point(newIndex, newRow, newCol),
+        new Point(snapshot.pivot.index, snapshot.pivot.row, snapshot.pivot.col)
+      );
+    };
+    const produce = (snapshot: NPuzzle): NPuzzle[] => {
+      const queue = [];
+
+      const up = generate(snapshot, -1, 0);
+      if (up) {
+        queue.push(up);
+      }
+      const down = generate(snapshot, 1, 0);
+      if (down) {
+        queue.push(down);
+      }
+      const left = generate(snapshot, 0, -1);
+      if (left) {
+        queue.push(left);
+      }
+      const right = generate(snapshot, 0, 1);
+      if (right) {
+        queue.push(right);
+      }
+      return queue;
+    };
     const strategy = new Strategy<NPuzzle>({
       h: (current: NPuzzle, goal: MappedNPuzzle) => taxicabH(current, goal),
-      g: (start: MappedNPuzzle, current: NPuzzle) => -taxicabH(current, start),
-      successors: (snapshot: NPuzzle) => EMPTY,
-      isGoal: (score: number) => false,
+      g: (source: MappedNPuzzle, current: NPuzzle) => 1,
+      successors: (snapshot: NPuzzle) => produce(snapshot),
+      isGoal: (snapshot, goal: MappedNPuzzle) => taxicabH(snapshot, goal) === 0,
     });
-    const startInstance = new MappedNPuzzle(5, [1, 2, 3]);
-    const targetInstance = new MappedNPuzzle(5, [3, 2, 1]);
-    const solver = new NPuzzleSolver(strategy, startInstance, targetInstance);
-    console.log(strategy);
-    console.log(solver);
-    const result = solver.solve();
-    console.log(result);
+    const sourceInstance = new MappedNPuzzle(3, [7, 2, 3, 1, 8, 4, 6, 5, 0]);
+    // const sourceInstance = new MappedNPuzzle(3, [3, 1, 2, 5, 4, 7, 0, 6, 8,]);
+    // const sourceInstance = new MappedNPuzzle(4, [5, 11, 15, 12,
+    //   4, 13, 8, 10,
+    //   3, 0, 7, 6,
+    //   14, 2, 9, 1]);
+    // const sourceInstance = new MappedNPuzzle(4, [
+    //   14,  8, 10, 13,
+    //   12, 11,  3, 15,
+    //   9,  2,  1,  0,
+    //   7, 5,  4,  6]);
+
+    // const sourceInstance = new MappedNPuzzle(5, [
+    //   23, 6, 8, 17, 11,
+    //   16, 10, 15, 4, 18,
+    //   2, 24, 0, 21, 22,
+    //   5, 19, 14, 20, 9,
+    //   7, 1, 3, 13, 12,]);
+    const targetInstance = new MappedNPuzzle(3, [1, 2, 3, 4, 5, 6, 7, 8, 0]);
+    // const targetInstance = new MappedNPuzzle(4, [
+    //   1, 2, 3, 4,
+    //   5, 6, 7, 8,
+    //   9, 10, 11, 12,
+    //   13, 14, 15, 0]);
+    // const targetInstance = new MappedNPuzzle(5, [
+    //   1, 2, 3, 4, 5,
+    //   6, 7, 8, 9, 10,
+    //   11, 12, 13, 14, 15,
+    //   16, 17, 18, 19, 20,
+    //   21, 22, 23, 24, 0]);
+    // console.log(strategy.h(targetInstance, targetInstance));
+
+    // sourceInstance.show();
+    // console.log(strategy.h(sourceInstance, targetInstance));
+    const solver = new NPuzzleSolver(strategy, sourceInstance, targetInstance);
+    // console.log(strategy);
+    // console.log(solver);
+    this.zone.runOutsideAngular(() => {
+      const result = solver.solve();
+      console.log(result);
+    });
+    // const result = solver.test();
+  }
+
+  heapTest(): void {
   }
 }

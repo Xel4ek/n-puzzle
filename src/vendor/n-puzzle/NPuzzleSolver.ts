@@ -25,14 +25,14 @@ export class NPuzzleSolver {
     sourceInstance: MappedNPuzzle,
     targetInstance: MappedNPuzzle
   ) {
-    this.solvable = this.validate(sourceInstance);
-    // if (this.solvable) {
-    this.factory = new NodeFactory<NPuzzle>(
-      strategy,
-      sourceInstance,
-      targetInstance
-    );
-    // }
+    this.solvable = new NPuzzleValidator().validate(startInstance);
+    if (this.solvable) {
+      this.factory = new NodeFactory<NPuzzle>(
+        strategy,
+        sourceInstance,
+        targetInstance
+      );
+    }
   }
 
   solve(): NPuzzleSolverReport<NPuzzle> {
@@ -89,43 +89,7 @@ export class NPuzzleSolver {
       solvable: this.solvable,
     };
   }
-
-  test(): void {
-    this.testPriorityQueue.insert(123, 123);
-    this.testPriorityQueue.insert(13, 13);
-    this.testPriorityQueue.insert(1232130, 1232130);
-    this.testPriorityQueue.insert(123, 1212330);
-    this.testPriorityQueue.insert(123, 12123130);
-    this.testPriorityQueue.insert(123, 1231230);
-    this.testPriorityQueue.insert(123, 1212330);
-    this.testPriorityQueue.insert(123, 11230);
-    this.testPriorityQueue.insert(123, 1230);
-    this.testPriorityQueue.insert(123, 4001230);
-    console.log(this.testPriorityQueue.pop());
-    console.log(this.testPriorityQueue.pop());
-    console.log(this.testPriorityQueue.pop());
-    console.log(this.testPriorityQueue.pop());
-    console.log(this.testPriorityQueue.pop());
-    console.log(this.testPriorityQueue.pop());
-    console.log(this.testPriorityQueue.pop());
-    console.log(this.testPriorityQueue.pop());
-    console.log(this.testPriorityQueue.pop());
-    console.log(this.testPriorityQueue.pop());
-    console.log(this.testPriorityQueue.pop());
-    console.log(this.testPriorityQueue.pop());
-    console.log(this.testPriorityQueue.pop());
-    console.log(this.testPriorityQueue.pop());
-    console.log(this.testPriorityQueue.pop());
-    console.log(this.testPriorityQueue.pop());
-    console.log(this.testPriorityQueue.pop());
-    console.log(this.testPriorityQueue.pop());
-    console.log(this.testPriorityQueue.pop());
-    console.log(this.testPriorityQueue.pop());
-    console.log(this.testPriorityQueue.pop());
-    console.log(this.testPriorityQueue.pop());
-  }
-
-  private validate(sourceInstance: NPuzzle): boolean {
+  private validate(startInstance: NPuzzle): boolean {
     return true;
   }
 }

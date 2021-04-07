@@ -177,8 +177,12 @@ export class NPuzzleComponent implements OnInit {
     // tslint:disable-next-line:no-console
     console.time('start');
     this.zone.runOutsideAngular(() => {
+      // tslint:disable-next-line:no-console
+
       console.profile('solve');
       const result = solver.solve();
+      // tslint:disable-next-line:no-console
+
       console.profileEnd('solve');
       console.log(result);
     });

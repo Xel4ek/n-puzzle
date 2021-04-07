@@ -37,9 +37,6 @@ export class NPuzzleSolver {
   }
 
   solve(): NPuzzleSolverReport<NPuzzle> {
-    if (!this.factory ) {
-      throw new Error('NPuzzle unsolved');
-    }
     console.warn('Start');
     const holder = new Set<string>();
     const sourceNode = this.factory.init();
@@ -56,7 +53,6 @@ export class NPuzzleSolver {
       }
       if (destroy % 100000 === 0) {
         console.log(destroy);
-        console.log(this.priorityQueue.size);
         entity.snapshot.show();
       }
       // if (destroy % 1000 === 0) {
@@ -70,8 +66,8 @@ export class NPuzzleSolver {
       // entity.snapshot.show();
       // console.groupEnd();
       // console.group('ADD');
-      if (!holder.has(entity.snapshot.instance.join(' '))) {
-        holder.add(entity.snapshot.instance.join(' '));
+      if (!holder.has(entity.snapshot.instance.join('-'))) {
+        holder.add(entity.snapshot.instance.join('-'));
         if (entity.isTarget) {
           console.error('EEEE');
           console.log(entity);

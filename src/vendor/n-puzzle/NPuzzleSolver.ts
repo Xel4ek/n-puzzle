@@ -20,7 +20,6 @@ export class NPuzzleSolver<
   P extends NPuzzle
 > {
   private implementsNodeCount = 0;
-  private requiredSteps = 0;
   private timeUsed = 0;
   private readonly solvable: boolean;
   private readonly factory?: NodeFactory<P>;
@@ -49,7 +48,7 @@ export class NPuzzleSolver<
       return {
         selectedStates: 0,
         implementsNodeCount: this.implementsNodeCount,
-        requiredSteps: this.requiredSteps,
+        requiredSteps: 0,
         solvable: this.solvable,
         done: Date.now(),
         timeUsed: 0,
@@ -62,13 +61,8 @@ export class NPuzzleSolver<
       sourceNode.score + sourceNode.predict,
       sourceNode
     );
-    let steps = 0;
     let entity = this.priorityQueue.pop();
-    for (
-      ;
-      entity && !entity.isTarget;
-      entity = this.priorityQueue.pop(), steps++
-    ) {
+    for (; entity && !entity.isTarget; entity = this.priorityQueue.pop()) {
       holder.add(entity.snapshot.instance.join(' '));
       this.factory.produce(entity).map((child) => {
         if (!holder.has(child.snapshot.instance.join(' '))) {
@@ -77,15 +71,15 @@ export class NPuzzleSolver<
         }
       });
     }
+    console.log(this.priorityQueue.size);
     this.timeUsed = performance.now() - startTime;
-    this.requiredSteps = steps;
     // console.error('FINISH');
     // console.log(holder);
     return {
       selectedStates: holder.size,
       implementsNodeCount: this.implementsNodeCount,
-      requiredSteps: this.requiredSteps,
-      history: entity,
+      requiredSteps: entity?.score ?? 0,
+      history: entity ?? sourceNode,
       solvable: this.solvable,
       done: Date.now(),
       timeUsed: this.timeUsed,

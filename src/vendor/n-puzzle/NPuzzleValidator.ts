@@ -13,15 +13,17 @@ export class NPuzzleValidator {
     const inversions = this.countInversions(instance);
     const blankRow = 1 + Math.trunc(instance.indexOf(0) / size);
     // console.log(blankRow);
-    return !!((inversions + blankRow) % 2);
+    return ((inversions + blankRow + size) % 2 === 0);
   }
 
   private countInversions(array: number[]): number {
     let count = 0;
-    for (let i = 0; i < array.length - 1; i++) {
-      for (let j = i + 1; j < array.length; j++) {
-        if (array[j] && array[i] && array[i] > array[j]) {
-          count++;
+    for (let i = 0; i < array.length; ++i) {
+      if (array[i]) {
+        for (let j = 0; j < i; ++j) {
+          if (array[j] > array[i]) {
+            count++;
+          }
         }
       }
     }

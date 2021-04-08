@@ -4,6 +4,10 @@ import { LeftHeapNode } from './LeftHeapNode';
 export class LeftHeap<T> implements HeapInterface<T> {
   private head?: LeftHeapNode<T>;
 
+  get size(): number {
+    return this.head?.dist ?? 0;
+  }
+
   insert(priority: number, item: T): void {
     this.head = this.merge(this.head, new LeftHeapNode(priority, item));
   }
@@ -14,26 +18,29 @@ export class LeftHeap<T> implements HeapInterface<T> {
     return item;
   }
 
-  merge(rhs?: LeftHeapNode<T>, lhs?: LeftHeapNode<T>): LeftHeapNode<T> | undefined {
-    if (!rhs) {
-      return lhs;
-    }
+  merge(
+    lhs?: LeftHeapNode<T>,
+    rhs?: LeftHeapNode<T>
+  ): LeftHeapNode<T> | undefined {
     if (!lhs) {
       return rhs;
     }
-    if (lhs.key < rhs.key) {
-      [rhs, lhs] = [lhs, rhs];
+    if (!rhs) {
+      return lhs;
     }
-    rhs.right = this.merge(rhs.right, lhs);
-    if ((rhs.right?.dist ?? 0) > (rhs.left?.dist ?? 0)) {
-      [rhs.right, rhs.left] = [rhs.left, rhs.right];
+    if (rhs.key < lhs.key) {
+      [lhs, rhs] = [rhs, lhs];
     }
-    // @ts-ignore
-    rhs.dist = rhs.right?.dist + 1;
-    return rhs;
-  }
-
-  get size(): number {
-    return  this.head?.dist ?? 0;
+    lhs.right = this.merge(lhs.right, rhs);
+    if (!lhs.left) {
+      lhs.left = lhs.right;
+      lhs.right = undefined;
+    } else {
+      if ((lhs.right?.dist ?? 0) > lhs.left.dist) {
+        [lhs.right, lhs.left] = [lhs.left, lhs.right];
+      }
+    }
+    lhs.dist = (lhs.right?.dist ?? 0) + 1;
+    return lhs;
   }
 }

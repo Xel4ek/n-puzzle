@@ -200,7 +200,9 @@ export class NPuzzleComponent implements OnInit {
     queue.insert(1, [1, 123, 12]);
     queue.insert(10, [10, 123, 12]);
     queue.insert(-12, [-12, 123, 12]);
+    queue.insert(-12, [-12, 123, 12]);
     queue.insert(0, [0, 123, 12]);
+    console.log(queue.pop());
     console.log(queue.pop());
     console.log(queue.pop());
     console.log(queue.pop());

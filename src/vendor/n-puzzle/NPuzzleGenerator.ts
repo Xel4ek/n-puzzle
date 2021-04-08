@@ -4,7 +4,7 @@ import { NPuzzleValidator } from './NPuzzleValidator';
 export class NPuzzleGenerator {
   private readonly size: number;
   private readonly key: string;
-  private readonly instance: number[];
+  private instance: number[];
 
   /*
    If N is odd, then puzzle instance is solvable if number of inversions is even in the input state.
@@ -15,7 +15,7 @@ export class NPuzzleGenerator {
   */
   constructor(
     size: number,
-    key: 'solvable' | 'unsolvable' | 'iteration' = 'solvable'
+    key: 'solvable' | 'unsolvable' = 'solvable'
   ) {
     this.size = size;
     this.key = key;
@@ -25,13 +25,20 @@ export class NPuzzleGenerator {
   }
 
   generate(): NPuzzle {
-    const valid = new NPuzzleValidator().validate(this.instance);
-    if (
-      (valid && this.key === 'unsolvable') ||
-      (!valid && this.key === 'solvable')
-    ) {
-      this.inversion();
+    for (let valid = false; !valid; ) {
+      this.instance = [...Array(this.size * this.size).keys()].sort(
+        (a, b) => 0.5 - Math.random()
+      );
+      console.log('new');
+      valid = new NPuzzleValidator().validate(this.instance);
     }
+    // const valid = new NPuzzleValidator().validate(this.instance);
+    // if (
+    //   (valid && this.key === 'unsolvable') ||
+    //   (!valid && this.key === 'solvable')
+    // ) {
+    //   this.inversion();
+    // }
     return new MappedNPuzzle(this.size, this.instance);
   }
 

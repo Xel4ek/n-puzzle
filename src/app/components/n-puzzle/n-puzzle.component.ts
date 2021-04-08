@@ -225,5 +225,6 @@ export class NPuzzleComponent implements OnInit {
   }
   clear(): void {
     this.results = [];
+    this.dataHolder.updateResult([]);
   }
 }

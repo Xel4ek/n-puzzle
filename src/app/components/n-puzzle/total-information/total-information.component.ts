@@ -17,18 +17,4 @@ export class TotalInformationComponent {
     this.data$ = dataHolder.getAverageData();
   }
 
-  // ngOnChanges(changes: SimpleChanges): void {
-  //   this.newFunc();
-  //   }
-
-  // newFunc(): void {
-  //   this.results.map((npuzzlereport) => {
-  //     this.totalRequiredSteps += npuzzlereport.requiredSteps;
-  //     this.solvableCount += npuzzlereport.solvable ? 1 : 0;
-  //     this.totalTime += npuzzlereport.timeUsed;
-  //   });
-  //   this.unsolvableCount = this.results.length - this.solvableCount;
-  // }
-
-  ngOnInit(): void {}
 }

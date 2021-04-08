@@ -8,7 +8,7 @@ import { NPuzzle } from '../../../vendor/n-puzzle/NPuzzle';
 })
 export class DataHolderService {
   private readonly loading$ = new BehaviorSubject<boolean>(false);
-  private readonly totalResult$ = new ReplaySubject(1);
+  private readonly totalResult$ = new BehaviorSubject({len: 0});
 
   constructor() {}
 

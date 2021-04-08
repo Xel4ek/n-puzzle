@@ -4,11 +4,14 @@ import { filter, first, map, mergeMap, tap } from 'rxjs/operators';
 import { Strategy } from '../../../vendor/n-puzzle/Strategy';
 import { MappedNPuzzle, NPuzzle } from '../../../vendor/n-puzzle/NPuzzle';
 import { Point } from '../../../vendor/n-puzzle/Point';
-import { NPuzzleSolver, NPuzzleSolverReport } from '../../../vendor/n-puzzle/NPuzzleSolver';
+import {
+  NPuzzleSolver,
+  NPuzzleSolverReport,
+} from '../../../vendor/n-puzzle/NPuzzleSolver';
 import { NPuzzleGenerator } from '../../../vendor/n-puzzle/NPuzzleGenerator';
 import { PriorityQueue } from '../../../vendor/priority-queue/priority-queue';
 import { LeftHeap } from '../../../vendor/heap/left-heap/LeftHeap';
-import {Node} from '../../../vendor/n-puzzle/Node';
+import { Node } from '../../../vendor/n-puzzle/Node';
 import { DataHolderService } from '../../services/data-holder/data-holder.service';
 
 @Component({
@@ -21,13 +24,19 @@ export class NPuzzleComponent implements OnInit {
   calculated = false;
   size = 4;
   results: NPuzzleSolverReport<NPuzzle>[] = [];
-  constructor(private readonly zone: NgZone,
-              private readonly dataHolder: DataHolderService) {
+  averageSteps = 0;
+  averageTime = 0;
+  solvableCount = 0;
+  unsolvableCount = 0;
+
+  constructor(
+    private readonly zone: NgZone,
+    private readonly dataHolder: DataHolderService
+  ) {
     this.generate();
   }
 
-  ngOnInit(): void {
-  }
+  ngOnInit(): void {}
 
   uploadFile(fileList: FileList | null): void {
     if (!fileList || !fileList.length) {
@@ -79,7 +88,7 @@ export class NPuzzleComponent implements OnInit {
       return lhs.instance.reduce((acc, cur, index) => {
         const point = rhs.mapInstance.get(cur);
         if (point) {
-          const {row, col} = point;
+          const { row, col } = point;
           return (
             acc +
             Math.abs((index % size) - col) +
@@ -186,12 +195,31 @@ export class NPuzzleComponent implements OnInit {
 
     // sourceInstance.show();
     // console.log(strategy.h(sourceInstance, targetInstance));
-    const solver = new NPuzzleSolver<LeftHeap<Node<NPuzzle>>, NPuzzle>(LeftHeap, strategy, sourceInstance, targetInstance);
-    const result  = this.zone.runOutsideAngular(() => {
+    const solver = new NPuzzleSolver<LeftHeap<Node<NPuzzle>>, NPuzzle>(
+      LeftHeap,
+      strategy,
+      sourceInstance,
+      targetInstance
+    );
+    const result = this.zone.runOutsideAngular(() => {
       return solver.solve();
     });
     this.results.push(result);
-    this.calculated =  false;
+    this.averageSteps =
+      Array.from(this.results, (x) => x.requiredSteps).reduce(
+        (sum, curr) => sum + curr,
+        0
+      ) / this.results.length;
+    this.averageTime =
+      Array.from(this.results, (x) => x.timeUsed).reduce(
+        (sum, curr) => sum + curr,
+        0
+      ) / this.results.length;
+    this.solvableCount = Array.from(this.results, (x) => x.solvable).filter(
+      (x) => x
+    ).length;
+    this.unsolvableCount = this.results.length - this.solvableCount;
+    this.calculated = false;
     // const result = solver.test();
   }
 

@@ -4,11 +4,12 @@ import { filter, first, map, mergeMap, tap } from 'rxjs/operators';
 import { Strategy } from '../../../vendor/n-puzzle/Strategy';
 import { MappedNPuzzle, NPuzzle } from '../../../vendor/n-puzzle/NPuzzle';
 import { Point } from '../../../vendor/n-puzzle/Point';
-import { NPuzzleSolver } from '../../../vendor/n-puzzle/NPuzzleSolver';
+import { NPuzzleSolver, NPuzzleSolverReport } from '../../../vendor/n-puzzle/NPuzzleSolver';
 import { NPuzzleGenerator } from '../../../vendor/n-puzzle/NPuzzleGenerator';
 import { PriorityQueue } from '../../../vendor/priority-queue/priority-queue';
 import { LeftHeap } from '../../../vendor/heap/left-heap/LeftHeap';
 import {Node} from '../../../vendor/n-puzzle/Node';
+import { DataHolderService } from '../../services/data-holder/data-holder.service';
 
 @Component({
   selector: 'app-n-puzzle',
@@ -17,10 +18,12 @@ import {Node} from '../../../vendor/n-puzzle/Node';
 })
 export class NPuzzleComponent implements OnInit {
   puzzle: any;
-  one = [12, 12];
-  second = [123, 123];
-
-  constructor(private readonly zone: NgZone) {
+  calculated = false;
+  size = 3;
+  results: NPuzzleSolverReport<NPuzzle>[] = [];
+  constructor(private readonly zone: NgZone,
+              private readonly dataHolder: DataHolderService) {
+    this.generate();
   }
 
   ngOnInit(): void {
@@ -56,6 +59,10 @@ export class NPuzzleComponent implements OnInit {
   }
 
   solve(): void {
+    if (this.calculated) {
+      return;
+    }
+    this.calculated = true;
     const taxicabH = (lhs: NPuzzle, rhs: MappedNPuzzle): number => {
       const size = rhs.size;
       // let predict = 0;
@@ -179,17 +186,13 @@ export class NPuzzleComponent implements OnInit {
 
     // sourceInstance.show();
     // console.log(strategy.h(sourceInstance, targetInstance));
-    const solver = new NPuzzleSolver<LeftHeap<Node<NPuzzle>>>(LeftHeap, strategy, sourceInstance, targetInstance);
-    // console.log(strategy);
-    // console.log(solver);
-    this.zone.runOutsideAngular(() => {
-      // tslint:disable-next-line:no-console
-
-      const begin = performance.now();
-      const result = solver.solve();
-      const time = performance.now() - begin;
-      console.log(result, time, ' milliseconds');
+    const solver = new NPuzzleSolver<LeftHeap<Node<NPuzzle>>, NPuzzle>(LeftHeap, strategy, sourceInstance, targetInstance);
+    const result  = this.zone.runOutsideAngular(() => {
+      return solver.solve();
     });
+    console.log("!!!", result, "!!!");
+    this.results.push(result);
+    this.calculated =  false;
     // const result = solver.test();
   }
 
@@ -207,6 +210,9 @@ export class NPuzzleComponent implements OnInit {
   }
 
   generate(): void {
-    this.puzzle = new NPuzzleGenerator(3).generate();
+    this.puzzle = new NPuzzleGenerator(this.size).generate();
+  }
+  clear(): void {
+    this.results = [];
   }
 }

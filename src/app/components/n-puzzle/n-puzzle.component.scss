@@ -8,3 +8,14 @@
   gap: 2rem;
   justify-content: space-around;
 }
+.disable {
+  pointer-events: none;
+  background: #4e4e4e;
+  opacity: .7;
+}
+.loading {
+  cursor: wait;
+}
+.main__btns {
+  padding: 2rem 0;
+}

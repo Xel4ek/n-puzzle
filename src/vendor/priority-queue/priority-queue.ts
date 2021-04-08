@@ -1,4 +1,3 @@
-import { Heap } from '../heap/binary-heap/heap';
 import { HeapInterface } from '../heap/heap.interface';
 
 export class PriorityQueue<P extends HeapInterface<T>, T> {

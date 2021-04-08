@@ -5,6 +5,7 @@
   color: white;
   box-shadow: 1px 1px 3px #737373;
   border-radius: .3rem;
+  cursor: pointer;
 }
 
 .shine {
@@ -53,4 +54,11 @@
 
 .shine:active:after {
   opacity: 0;
+}
+
+::-webkit-scrollbar {
+  width: 0;
+}
+.body {
+  overflow-x: hidden;
 }

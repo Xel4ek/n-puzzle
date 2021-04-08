@@ -1,21 +1,38 @@
-<pre>
-  {{ puzzle | json }}
-</pre>
-
-<pre>
-  {{ one | json }}
-</pre>
-<pre>
-  {{ second | json }}
-</pre>
-<div class="btn__block">
+<div class="btn__block main__btns">
   <label class="btn shine input__hidden">
     Select File
     <input #input (change)="uploadFile(input.files)" type="file" />
   </label>
   <div (click)="solve()" class="btn shine">Solve</div>
   <div (click)="generate()" class="btn shine">Generate</div>
+  <div (click)="clear()" class="btn shine">Clear</div>
 </div>
-<div class="btn__block">
-  <div (click)="heapTest()" class="btn shine">Test</div>
-</div>
+
+<mat-accordion>
+  <mat-expansion-panel>
+    <mat-expansion-panel-header>
+      <mat-panel-title>
+       Calculations: {{results.length}}
+      </mat-panel-title>
+      <mat-panel-description>
+       Total information
+      </mat-panel-description>
+    </mat-expansion-panel-header>
+    <p>This is the primary content of the panel.</p>
+  </mat-expansion-panel>
+
+  <mat-expansion-panel *ngFor="let result of results.reverse(); index as i">
+    <mat-expansion-panel-header>
+      <mat-panel-title>
+        Calculation #{{results.length - i}}
+      </mat-panel-title>
+      <mat-panel-description>
+        Get: {{result.done | date: 'HH:mm:ss'}}
+      </mat-panel-description>
+    </mat-expansion-panel-header>
+    <app-npuzzle-result [result]="result" [index]="results.length - i"> </app-npuzzle-result>
+  </mat-expansion-panel>
+</mat-accordion>
+
+
+

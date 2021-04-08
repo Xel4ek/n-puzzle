@@ -1,11 +1,11 @@
 import { HeapInterface } from '../heap.interface';
-import { Node } from './Node';
+import { LeftHeapNode } from './LeftHeapNode';
 
 export class LeftHeap<T> implements HeapInterface<T> {
-  private head?: Node<T>;
+  private head?: LeftHeapNode<T>;
 
   insert(priority: number, item: T): void {
-    this.head = this.merge(this.head, new Node(priority, item));
+    this.head = this.merge(this.head, new LeftHeapNode(priority, item));
   }
 
   pop(): T | undefined {
@@ -14,7 +14,7 @@ export class LeftHeap<T> implements HeapInterface<T> {
     return item;
   }
 
-  merge(rhs?: Node<T>, lhs?: Node<T>): Node<T> | undefined {
+  merge(rhs?: LeftHeapNode<T>, lhs?: LeftHeapNode<T>): LeftHeapNode<T> | undefined {
     if (!rhs) {
       return lhs;
     }

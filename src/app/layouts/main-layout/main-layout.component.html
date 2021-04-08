@@ -1,4 +1,4 @@
-<div class="wrapper">
+<div class="wrapper" [ngClass]="{'loading' : loading$ | async}">
   <header class="header">
     <div class="container">
       <div class="content">N-Puzzle game</div>

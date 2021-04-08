@@ -1,8 +1,8 @@
-export class Node<T> {
+export class LeftHeapNode<T> {
   readonly item: T;
   key: number;
-  right?: Node<T>;
-  left?: Node<T>;
+  right?: LeftHeapNode<T>;
+  left?: LeftHeapNode<T>;
   dist = 0;
   constructor(key: number, item: T) {
     this.item = item;

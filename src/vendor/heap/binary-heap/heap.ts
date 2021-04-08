@@ -1,13 +1,14 @@
-import { HeapInterface } from './heap.interface';
+import { HeapInterface } from '../heap.interface';
 
 export class Heap<T> implements HeapInterface<T> {
   private readonly heap: { key: number; item: T }[] = [];
-
-  constructor() {
+  private readonly limits;
+  constructor(limits?: number) {
+    this.limits = limits;
   }
 
   insert(key: number, item: T): void {
-    this.heap.push({key, item});
+    this.heap.push({ key, item });
     let i = this.heap.length - 1;
     while (i > 0) {
       const p = this.parent(i);
@@ -17,7 +18,9 @@ export class Heap<T> implements HeapInterface<T> {
       [this.heap[i], this.heap[p]] = [this.heap[p], this.heap[i]];
       i = p;
     }
-    if (this.heap.length > 3e6) { this.heap.length = 2e6; }
+    if (this.limits && this.heap.length > this.limits) {
+      this.heap.length = Math.trunc(this.limits * 0.8);
+    }
   }
 
   pop(): T | undefined {
@@ -46,18 +49,21 @@ export class Heap<T> implements HeapInterface<T> {
     }
     return item?.item;
   }
-  size(): number {
+  get size(): number {
     return this.heap.length;
   }
-  private parent = (index: number) => Math.trunc((index - 1) / 2);
+  private readonly parent = (index: number) => Math.trunc((index - 1) / 2);
 
-  private left = (index: number) => 2 * index + 1;
+  private readonly left = (index: number) => 2 * index + 1;
 
-  private right = (index: number) => 2 * index + 2;
+  private readonly right = (index: number) => 2 * index + 2;
 
-  private hasLeft = (index: number) => this.left(index) < this.heap.length;
+  private readonly hasLeft = (index: number) =>
+    this.left(index) < this.heap.length;
 
-  private hasRight = (index: number) => this.right(index) < this.heap.length;
+  private readonly hasRight = (index: number) =>
+    this.right(index) < this.heap.length;
 
-  private swap = (a: number, b: number) => ([this.heap[a], this.heap[b]] = [this.heap[b], this.heap[a]]);
+  private readonly swap = (a: number, b: number) =>
+    ([this.heap[a], this.heap[b]] = [this.heap[b], this.heap[a]]);
 }

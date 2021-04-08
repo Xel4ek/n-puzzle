@@ -6,6 +6,9 @@ import { MappedNPuzzle, NPuzzle } from '../../../vendor/n-puzzle/NPuzzle';
 import { Point } from '../../../vendor/n-puzzle/Point';
 import { NPuzzleSolver } from '../../../vendor/n-puzzle/NPuzzleSolver';
 import { NPuzzleGenerator } from '../../../vendor/n-puzzle/NPuzzleGenerator';
+import { PriorityQueue } from '../../../vendor/priority-queue/priority-queue';
+import { LeftHeap } from '../../../vendor/heap/left-heap/LeftHeap';
+import {Node} from '../../../vendor/n-puzzle/Node';
 
 @Component({
   selector: 'app-n-puzzle',
@@ -14,6 +17,8 @@ import { NPuzzleGenerator } from '../../../vendor/n-puzzle/NPuzzleGenerator';
 })
 export class NPuzzleComponent implements OnInit {
   puzzle: any;
+  one = [12, 12];
+  second = [123, 123];
 
   constructor(private readonly zone: NgZone) {
   }
@@ -137,7 +142,7 @@ export class NPuzzleComponent implements OnInit {
       isGoal: (snapshot, goal: MappedNPuzzle) => taxicabH(snapshot, goal) === 0,
     });
     const sourceInstance = this.puzzle;
-      // new MappedNPuzzle(3, [7, 2, 3, 1, 8, 4, 6, 5, 0]);
+    // new MappedNPuzzle(3, [7, 2, 3, 1, 8, 4, 6, 5, 0]);
     // const sourceInstance = new MappedNPuzzle(3, [3, 1, 2, 5, 4, 7, 0, 6, 8,]);
     // const sourceInstance = new MappedNPuzzle(4, [5, 11, 15, 12,
     //   4, 13, 8, 10,
@@ -155,7 +160,10 @@ export class NPuzzleComponent implements OnInit {
     //   2, 24, 0, 21, 22,
     //   5, 19, 14, 20, 9,
     //   7, 1, 3, 13, 12,]);
-    const targetInstance = new MappedNPuzzle(this.puzzle.size, [...this.puzzle.instance].sort());
+    const targetInstance = new MappedNPuzzle(
+      this.puzzle.size,
+      [...this.puzzle.instance].sort()
+    );
     // const targetInstance = new MappedNPuzzle(4, [
     //   1, 2, 3, 4,
     //   5, 6, 7, 8,
@@ -171,28 +179,33 @@ export class NPuzzleComponent implements OnInit {
 
     // sourceInstance.show();
     // console.log(strategy.h(sourceInstance, targetInstance));
-    const solver = new NPuzzleSolver(strategy, sourceInstance, targetInstance);
+    const solver = new NPuzzleSolver<LeftHeap<Node<NPuzzle>>>(LeftHeap, strategy, sourceInstance, targetInstance);
     // console.log(strategy);
     // console.log(solver);
-    // tslint:disable-next-line:no-console
-    console.time('start');
     this.zone.runOutsideAngular(() => {
       // tslint:disable-next-line:no-console
 
-      console.profile('solve');
+      const begin = performance.now();
       const result = solver.solve();
-      // tslint:disable-next-line:no-console
-
-      console.profileEnd('solve');
-      console.log(result);
+      const time = performance.now() - begin;
+      console.log(result, time, ' milliseconds');
     });
-    // tslint:disable-next-line:no-console
-    console.timeEnd('start');
     // const result = solver.test();
   }
 
   heapTest(): void {
+    const queue = new PriorityQueue<LeftHeap<number[]>, number[]>(LeftHeap);
+    queue.insert(1, [1, 123, 12]);
+    queue.insert(10, [10, 123, 12]);
+    queue.insert(-12, [-12, 123, 12]);
+    queue.insert(0, [0, 123, 12]);
+    console.log(queue.pop());
+    console.log(queue.pop());
+    console.log(queue.pop());
+    console.log(queue.pop());
+    console.log(queue.pop());
   }
+
   generate(): void {
     this.puzzle = new NPuzzleGenerator(3).generate();
   }

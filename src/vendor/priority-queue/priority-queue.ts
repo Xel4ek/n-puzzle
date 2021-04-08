@@ -1,7 +1,11 @@
-import { Heap } from '../heap/heap';
+import { Heap } from '../heap/binary-heap/heap';
+import { HeapInterface } from '../heap/heap.interface';
 
-export class PriorityQueue<T> {
-  private readonly heap = new Heap<T>();
+export class PriorityQueue<P extends HeapInterface<T>, T> {
+  private readonly heap: P;
+  constructor(private heapClass: new () => P) {
+    this.heap = new heapClass();
+  }
   pop(): T|undefined {
     return this.heap.pop();
   }
@@ -12,6 +16,6 @@ export class PriorityQueue<T> {
     this.heap.insert(key, item);
   }
   get size(): number {
-    return this.heap.size();
+    return this.heap.size;
   }
 }

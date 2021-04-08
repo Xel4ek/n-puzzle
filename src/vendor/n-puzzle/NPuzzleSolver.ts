@@ -3,6 +3,7 @@ import { MappedNPuzzle, NPuzzle } from './NPuzzle';
 import { Strategy } from './Strategy';
 import { PriorityQueue } from '../priority-queue/priority-queue';
 import { NPuzzleValidator } from './NPuzzleValidator';
+import { HeapInterface } from '../heap/heap.interface';
 
 interface NPuzzleSolverReport<T> {
   selectedStates: number;
@@ -11,19 +12,21 @@ interface NPuzzleSolverReport<T> {
   solvable: boolean;
 }
 
-export class NPuzzleSolver {
+export class NPuzzleSolver<T extends HeapInterface<any>> {
   private selectedStates = 0;
   private implementsNodeCount = 0;
   private requiredSteps = 0;
   private solvable: boolean;
   private readonly factory?: NodeFactory<NPuzzle>;
-  private readonly priorityQueue = new PriorityQueue<Node<NPuzzle>>();
+  private readonly priorityQueue: PriorityQueue<T, Node<NPuzzle>>;
 
   constructor(
-    strategy: Strategy<NPuzzle>,
-    sourceInstance: MappedNPuzzle,
-    targetInstance: MappedNPuzzle
+    private readonly heapClass: new () => T,
+    private readonly strategy: Strategy<NPuzzle>,
+    private readonly sourceInstance: MappedNPuzzle,
+    private readonly targetInstance: MappedNPuzzle,
   ) {
+    this.priorityQueue = new PriorityQueue<T, Node<NPuzzle>>(heapClass);
     this.solvable = new NPuzzleValidator().validate(sourceInstance);
     if (this.solvable) {
       this.factory = new NodeFactory<NPuzzle>(
@@ -97,6 +100,7 @@ export class NPuzzleSolver {
       solvable: this.solvable,
     };
   }
+
   private validate(startInstance: NPuzzle): boolean {
     return true;
   }

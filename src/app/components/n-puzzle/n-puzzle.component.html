@@ -1,6 +1,13 @@
 <pre>
   {{ puzzle | json }}
 </pre>
+
+<pre>
+  {{ one | json }}
+</pre>
+<pre>
+  {{ second | json }}
+</pre>
 <div class="btn__block">
   <label class="btn shine input__hidden">
     Select File
@@ -8,4 +15,7 @@
   </label>
   <div (click)="solve()" class="btn shine">Solve</div>
   <div (click)="generate()" class="btn shine">Generate</div>
+</div>
+<div class="btn__block">
+  <div (click)="heapTest()" class="btn shine">Test</div>
 </div>

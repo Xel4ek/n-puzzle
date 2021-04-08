@@ -21,12 +21,7 @@
        Total information
       </mat-panel-description>
     </mat-expansion-panel-header>
-<!--    TODO: add total of calculations-->
-    <p>This is the primary content of the panel.</p>
-    <p>Average time: {{averageTime}}</p>
-    <p>Average steps: {{averageSteps}}</p>
-    <p>Solvable puzzles: {{solvableCount}}</p>
-    <p>Unsolvable puzzles: {{unsolvableCount}}</p>
+    <app-total-information [results]="results"></app-total-information>
   </mat-expansion-panel>
 
   <mat-expansion-panel *ngFor="let result of results.reverse(); index as i">

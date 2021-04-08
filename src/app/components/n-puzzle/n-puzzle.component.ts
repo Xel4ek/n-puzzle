@@ -22,13 +22,8 @@ import { DataHolderService } from '../../services/data-holder/data-holder.servic
 export class NPuzzleComponent implements OnInit {
   puzzle: any;
   calculated = false;
-  size = 4;
+  size = 3;
   results: NPuzzleSolverReport<NPuzzle>[] = [];
-  averageSteps = 0;
-  averageTime = 0;
-  solvableCount = 0;
-  unsolvableCount = 0;
-
   constructor(
     private readonly zone: NgZone,
     private readonly dataHolder: DataHolderService
@@ -127,7 +122,7 @@ export class NPuzzleComponent implements OnInit {
       return new NPuzzle(
         snapshot.size,
         instance,
-        new Point(newIndex, newRow, newCol),
+        new Point(newIndex, newRow, newCol)
       );
     };
     const produce = (snapshot: NPuzzle): NPuzzle[] => {
@@ -205,20 +200,6 @@ export class NPuzzleComponent implements OnInit {
       return solver.solve();
     });
     this.results.push(result);
-    this.averageSteps =
-      Array.from(this.results, (x) => x.requiredSteps).reduce(
-        (sum, curr) => sum + curr,
-        0
-      ) / this.results.length;
-    this.averageTime =
-      Array.from(this.results, (x) => x.timeUsed).reduce(
-        (sum, curr) => sum + curr,
-        0
-      ) / this.results.length;
-    this.solvableCount = Array.from(this.results, (x) => x.solvable).filter(
-      (x) => x
-    ).length;
-    this.unsolvableCount = this.results.length - this.solvableCount;
     this.calculated = false;
     // const result = solver.test();
   }

@@ -54,6 +54,7 @@ export class NPuzzleSolver<
         timeUsed: 0,
       };
     }
+    let count = 0;
     const startTime = performance.now();
     const holder = new Set<string>();
     const sourceNode = this.factory.init();
@@ -63,9 +64,14 @@ export class NPuzzleSolver<
     );
     let entity = this.priorityQueue.pop();
     for (; entity && !entity.isTarget; entity = this.priorityQueue.pop()) {
+      count--;
+      if (count % 10000 === 0) {
+        console.log(count / 1000, 'k');
+      }
       holder.add(entity.snapshot.instance.join(' '));
       this.factory.produce(entity).map((child) => {
         if (!holder.has(child.snapshot.instance.join(' '))) {
+          count++;
           this.priorityQueue.insert(child.score + child.predict, child);
           this.implementsNodeCount++;
         }

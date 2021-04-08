@@ -4,9 +4,9 @@ import { Strategy } from './Strategy';
 export class Node<T> implements NodeInterface<T> {
   isTarget: boolean;
   parent?: Node<T>;
-  score: number;
+  score: number; // g
   snapshot: T;
-  predict: number;
+  predict: number; // h
 
   constructor(
     score: number,

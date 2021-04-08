@@ -19,7 +19,7 @@ import { DataHolderService } from '../../services/data-holder/data-holder.servic
 export class NPuzzleComponent implements OnInit {
   puzzle: any;
   calculated = false;
-  size = 3;
+  size = 4;
   results: NPuzzleSolverReport<NPuzzle>[] = [];
   constructor(private readonly zone: NgZone,
               private readonly dataHolder: DataHolderService) {
@@ -102,9 +102,10 @@ export class NPuzzleComponent implements OnInit {
         newRow >= size ||
         newRow < 0 ||
         newCol >= size ||
-        newCol < 0 ||
-        (newCol === snapshot.lastModified?.col &&
-          newRow === snapshot.lastModified?.row)
+        newCol < 0
+        // ||
+        // (newCol === snapshot.lastModified?.col &&
+        //   newRow === snapshot.lastModified?.row)
       ) {
         return;
       }
@@ -118,7 +119,6 @@ export class NPuzzleComponent implements OnInit {
         snapshot.size,
         instance,
         new Point(newIndex, newRow, newCol),
-        new Point(snapshot.pivot.index, snapshot.pivot.row, snapshot.pivot.col)
       );
     };
     const produce = (snapshot: NPuzzle): NPuzzle[] => {

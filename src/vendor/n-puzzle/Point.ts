@@ -15,7 +15,5 @@ export class Point {
       this.col = col ?? 0;
       this.row = instanceOrRow;
     }
-
   }
-
 }

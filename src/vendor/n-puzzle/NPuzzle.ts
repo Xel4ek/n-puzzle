@@ -5,21 +5,15 @@ export class NPuzzle implements NPuzzleInterface {
   instance: number[];
   pivot: Point;
   size: number;
-  lastModified?: Point;
 
   constructor(
     size: number,
     instance: number[],
     pivot?: Point,
-    lastModified?: Point,
-    // cost?: number
   ) {
     this.size = size;
     this.pivot = pivot ?? new Point(size, instance);
     this.instance = instance;
-    this.lastModified = lastModified;
-    // this.cost = cost ?? 0;
-    // this.show();
   }
 
   show(): void {
@@ -27,7 +21,7 @@ export class NPuzzle implements NPuzzleInterface {
     for (let i = 0; i < this.size; i++) {
       console.log(this.instance.slice(i * this.size, (i + 1) * this.size));
     }
-    console.log({last: this.lastModified});
+    // console.log({last: this.lastModified});
     console.log({pivot: this.pivot});
     console.groupEnd();
   }

@@ -11,9 +11,13 @@ export class NPuzzleValidator {
   private validateInstance(instance: number[]): boolean {
     const size = Math.trunc(Math.sqrt(instance.length));
     const inversions = this.countInversions(instance);
-    const blankRow = 1 + Math.trunc(instance.indexOf(0) / size);
-    // console.log(blankRow);
-    return ((inversions + blankRow + size) % 2 === 0);
+    if (size % 2 === 0) {
+      const blankRow = 1 + Math.trunc(instance.indexOf(0) / size);
+      // console.log(blankRow);
+      return (inversions + blankRow) % 2 === 0;
+    } else {
+      return inversions % 2 === 0;
+    }
   }
 
   private countInversions(array: number[]): number {

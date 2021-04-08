@@ -200,6 +200,7 @@ export class NPuzzleComponent implements OnInit {
       return solver.solve();
     });
     this.results.push(result);
+    this.dataHolder.updateResult(this.results);
     this.calculated = false;
     // const result = solver.test();
   }

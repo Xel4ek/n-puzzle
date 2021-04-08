@@ -1,7 +1,7 @@
 import { NPuzzleInterface } from './puzzle.interfaces';
 import { Point } from './Point';
 
-export class NPuzzle implements NPuzzleInterface {
+export class NPuzzle implements NPuzzleInterface<Point> {
   instance: number[];
   pivot: Point;
   size: number;

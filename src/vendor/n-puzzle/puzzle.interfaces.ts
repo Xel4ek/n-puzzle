@@ -1,9 +1,9 @@
 import { Point } from './Point';
 
-export interface NPuzzleInterface {
+export interface NPuzzleInterface<T> {
   instance: number[];
   size: number;
-  pivot: Point;
+  pivot: T;
 }
 
 export interface NodeInterface<T> {

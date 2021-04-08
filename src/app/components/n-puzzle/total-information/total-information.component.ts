@@ -5,14 +5,12 @@ import { DataHolderService } from '../../../services/data-holder/data-holder.ser
 import { Observable } from 'rxjs';
 
 @Component({
-  selector: 'app-total-information[results]',
+  selector: 'app-total-information',
   templateUrl: './total-information.component.html',
   styleUrls: ['./total-information.component.scss'],
 })
 export class TotalInformationComponent {
   data$: Observable<any>;
-  @Input() results!: NPuzzleSolverReport<NPuzzle>[];
-
   constructor(private readonly dataHolder: DataHolderService) {
     this.data$ = dataHolder.getAverageData();
   }

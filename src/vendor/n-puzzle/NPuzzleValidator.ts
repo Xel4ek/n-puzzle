@@ -25,7 +25,7 @@ export class NPuzzleValidator {
         }
       }
     }
-    console.log(count);
+    // console.log(count);
     return count;
   }
 }

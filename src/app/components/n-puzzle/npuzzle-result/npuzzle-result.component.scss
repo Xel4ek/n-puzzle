@@ -1,0 +1,47 @@
+.card {
+  .red {
+    color: #830101;
+  }
+  .green {
+    color: #06cf06;
+  }
+  .title {
+    display: flex;
+    padding: 0 2rem;
+    gap: 2rem;
+    &__number {
+      font-weight: bold;
+    }
+
+    &__time {
+      font-style: italic;
+      font-weight: 300;
+      color: #4e4e4e;
+    }
+  }
+
+  &__row {
+    display: flex;
+  }
+
+  &__puzzle {
+    width: 400px;
+    height: 400px;
+  }
+
+  &__info {
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
+    font-style: italic;
+    font-weight: 300;
+
+    .info__row-data {
+      font-weight: 500;
+    }
+
+    .info__row {
+      padding: 0.5rem 1rem;
+    }
+  }
+}

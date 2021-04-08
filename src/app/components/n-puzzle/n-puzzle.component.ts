@@ -190,7 +190,6 @@ export class NPuzzleComponent implements OnInit {
     const result  = this.zone.runOutsideAngular(() => {
       return solver.solve();
     });
-    console.log("!!!", result, "!!!");
     this.results.push(result);
     this.calculated =  false;
     // const result = solver.test();

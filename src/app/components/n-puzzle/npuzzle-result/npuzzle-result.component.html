@@ -1,0 +1,16 @@
+<div class="card">
+   <div class="title">
+    <div class="title__number" [ngClass]="result.solvable ? 'green' : 'red'">[ {{index}} ]</div>
+     <div class="title__time">    {{result.done | date: 'HH:mm:ss'}}
+     </div>
+  </div>
+  <div class="card__row">
+    <div class="card__puzzle"></div>
+    <div class="card__info">
+      <div class="info__row">selectedStates: <span class="info__row-data">{{result.selectedStates | number: '1.0-2'}}</span> states</div>
+      <div class="info__row">implementsNodeCount: <span class="info__row-data">{{result.implementsNodeCount | number: '1.0-2'}}</span> nodes</div>
+      <div class="info__row">requiredSteps: <span class="info__row-data">{{result.requiredSteps | number: '1.0-2'}}</span> steps</div>
+      <div class="info__row">timeUsed: <span class="info__row-data">{{result.timeUsed | number: '1.0-2'}}</span> milliseconds</div>
+    </div>
+  </div>
+</div>

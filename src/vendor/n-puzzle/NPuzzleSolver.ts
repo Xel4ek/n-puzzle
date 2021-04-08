@@ -19,7 +19,6 @@ export class NPuzzleSolver<
   T extends HeapInterface<Node<P>>,
   P extends NPuzzle
 > {
-  private selectedStates = 0;
   private implementsNodeCount = 0;
   private requiredSteps = 0;
   private timeUsed = 0;
@@ -56,7 +55,6 @@ export class NPuzzleSolver<
         timeUsed: 0,
       };
     }
-    console.warn('Start');
     const startTime = performance.now();
     const holder = new Set<string>();
     const sourceNode = this.factory.init();

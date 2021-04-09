@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable, ReplaySubject } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { NPuzzleSolverReport } from '../../../vendor/n-puzzle/NPuzzleSolver';
 import { NPuzzle } from '../../../vendor/n-puzzle/NPuzzle';
 
@@ -8,7 +8,7 @@ import { NPuzzle } from '../../../vendor/n-puzzle/NPuzzle';
 })
 export class DataHolderService {
   private readonly loading$ = new BehaviorSubject<boolean>(false);
-  private readonly totalResult$ = new BehaviorSubject({len: 0});
+  private readonly totalResult$ = new BehaviorSubject({ len: 0 });
 
   constructor() {}
 
@@ -20,16 +20,24 @@ export class DataHolderService {
     return this.loading$.asObservable();
   }
 
-  updateResult(resultList: NPuzzleSolverReport<NPuzzle>[]): any {
+  updateResult(resultList: NPuzzleSolverReport<NPuzzle>[]): void {
     this.totalResult$.next({
       ...resultList.reduce(
         (acc: any, npuzzlereport) => {
           acc.totalRequiredSteps += npuzzlereport.requiredSteps;
           acc.solvableCount += npuzzlereport.solvable ? 1 : 0;
           acc.totalTime += npuzzlereport.timeUsed;
+          acc.totalStates += npuzzlereport.closedNodes;
+          acc.totalNodes += npuzzlereport.implementsNodeCount;
           return acc;
         },
-        { totalRequiredSteps: 0, solvableCount: 0, totalTime: 0 }
+        {
+          totalRequiredSteps: 0,
+          solvableCount: 0,
+          totalTime: 0,
+          totalStates: 0,
+          totalNodes: 0,
+        }
       ),
       len: resultList.length,
     });

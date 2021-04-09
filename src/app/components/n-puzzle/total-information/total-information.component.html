@@ -3,6 +3,8 @@
   <ng-container *ngIf="data?.len; else noTest">
     <p>Average time: {{data.totalTime/data.len}}</p>
     <p>Average steps: {{data.totalRequiredSteps/data.len}}</p>
+    <p>Average selected states: {{data.totalStates/data.len}}</p>
+    <p>Average implemented nodes: {{data.totalNodes/data.len}}</p>
     <p>Solvable puzzles: {{data.solvableCount}}</p>
     <p>Unsolvable puzzles: {{data.unsolvableCount}}</p>
   </ng-container>

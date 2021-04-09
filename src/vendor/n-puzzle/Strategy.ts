@@ -1,6 +1,7 @@
-import { StrategyInterface, } from './puzzle.interfaces';
+import { StrategyInterface } from './puzzle.interfaces';
+import { MappedNPuzzle, NPuzzle } from './NPuzzle';
 
-export class Strategy<T> implements StrategyInterface<T> {
+export class Strategy<T extends NPuzzle> {
   private readonly strategy: StrategyInterface<T>;
 
   constructor(strategy: StrategyInterface<T>) {
@@ -11,12 +12,27 @@ export class Strategy<T> implements StrategyInterface<T> {
     return this.strategy.g(source, current);
   }
 
-  h(current: T, goal: T): number {
-    return this.strategy.h(current, goal);
+  h(current: T, target: T): number {
+    const size = target.size;
+    if (!(target instanceof MappedNPuzzle)) {
+      throw new Error('target must implement MappedNPuzzle class');
+    }
+    return current.instance.reduce((acc, cur, index) => {
+      const point = target.mapInstance.get(cur);
+      if (point) {
+        const { row, col } = point;
+        return (
+          acc +
+          this.strategy.h([Math.trunc(index / size), index % size], [row, col])
+        );
+      } else {
+        throw new Error('no Map');
+      }
+    }, 0);
   }
 
-  isGoal(snapshot: T, target: T): boolean {
-    return this.strategy.isGoal(snapshot, target);
+  isGoal(current: T, target: T): boolean {
+    return this.h(current, target) === this.strategy.goalH;
   }
 
   successors(snapshot: T): T[] {

@@ -13,11 +13,11 @@ export interface NodeInterface<T> {
 }
 
 export interface StrategyInterface<T> {
-  h(current: T, goal: T): number;
+
+  goalH: number;
+  h([currentRow, currentCol]: number[], [targetRow, targetCol]: number[]): number;
 
   g(source: T, current: T): number;
 
   successors(snapshot: T): T[];
-
-  isGoal(snapshot: T, target: T): boolean;
 }

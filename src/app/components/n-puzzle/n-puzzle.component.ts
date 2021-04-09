@@ -67,35 +67,8 @@ export class NPuzzleComponent implements OnInit {
       return;
     }
     this.calculated = true;
-    const taxicabH = (lhs: NPuzzle, rhs: MappedNPuzzle): number => {
-      const size = rhs.size;
-      // let predict = 0;
-      // lhs.instance.map((cur, index) => {
-      //   const point = rhs.mapInstance.get(cur);
-      //   if (point) {
-      //     const { row, col } = point;
-      //     predict +=
-      //       Math.abs((index % size) - col) +
-      //       Math.abs(Math.trunc(index / size) - row);
-      //   }
-      // });
-      // return predict;
-      return lhs.instance.reduce((acc, cur, index) => {
-        // if (cur) {
-        const point = rhs.mapInstance.get(cur);
-        if (point) {
-          const { row, col } = point;
-          return (
-            acc +
-            Math.abs((index % size) - col) +
-            Math.abs(Math.trunc(index / size) - row)
-          );
-        } else {
-          throw new Error('no Map');
-        }
-        // }
-        // return acc;
-      }, 0);
+    const taxicabH = ([currentRow, currentCol]: number[], [targetRow, targetCol]: number[]): number => {
+      return Math.abs(currentRow - targetRow) + Math.abs(currentCol - targetCol);
     };
 
     const generate = (
@@ -161,51 +134,16 @@ export class NPuzzleComponent implements OnInit {
       return queue;
     };
     const strategy = new Strategy<NPuzzle>({
-      h: (current: NPuzzle, goal: MappedNPuzzle) => taxicabH(current, goal),
+      h: taxicabH,
       g: (source: MappedNPuzzle, current: NPuzzle) => 1,
       successors: (snapshot: NPuzzle) => produce(snapshot),
-      isGoal: (snapshot, goal: MappedNPuzzle) => {
-        return taxicabH(snapshot, goal) === 0;
-      },
+      goalH: 0
     });
     const sourceInstance = this.puzzle;
-    // new MappedNPuzzle(3, [7, 2, 3, 1, 8, 4, 6, 5, 0]);
-    // const sourceInstance = new MappedNPuzzle(3, [3, 1, 2, 5, 4, 7, 0, 6, 8,]);
-    // const sourceInstance = new MappedNPuzzle(4, [5, 11, 15, 12,
-    //   4, 13, 8, 10,
-    //   3, 0, 7, 6,
-    //   14, 2, 9, 1]);
-    // const sourceInstance = new MappedNPuzzle(4, [
-    //   14,  8, 10, 13,
-    //   12, 11,  3, 15,
-    //   9,  2,  1,  0,
-    //   7, 5,  4,  6]);
-
-    // const sourceInstance = new MappedNPuzzle(5, [
-    //   23, 6, 8, 17, 11,
-    //   16, 10, 15, 4, 18,
-    //   2, 24, 0, 21, 22,
-    //   5, 19, 14, 20, 9,
-    //   7, 1, 3, 13, 12,]);
     const targetInstance = (() => {
       const target = [...this.puzzle.instance].sort(((a, b) => a - b));
       return new MappedNPuzzle(this.puzzle.size, [...target.slice(1), 0]);
     })();
-    // const targetInstance = new MappedNPuzzle(4, [
-    //   1, 2, 3, 4,
-    //   5, 6, 7, 8,
-    //   9, 10, 11, 12,
-    //   13, 14, 15, 0]);
-    // const targetInstance = new MappedNPuzzle(5, [
-    //   1, 2, 3, 4, 5,
-    //   6, 7, 8, 9, 10,
-    //   11, 12, 13, 14, 15,
-    //   16, 17, 18, 19, 20,
-    //   21, 22, 23, 24, 0]);
-    // console.log(strategy.h(targetInstance, targetInstance));
-
-    // sourceInstance.show();
-    // console.log(strategy.h(sourceInstance, targetInstance));
     const solver = new NPuzzleSolver<LeftHeap<NPuzzle>, NPuzzle>(
       LeftHeap,
       strategy,
@@ -218,7 +156,6 @@ export class NPuzzleComponent implements OnInit {
     this.results.push(result);
     this.dataHolder.updateResult(this.results);
     this.calculated = false;
-    // const result = solver.test();
   }
 
   heapTest(): void {

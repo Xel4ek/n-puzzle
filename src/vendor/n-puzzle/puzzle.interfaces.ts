@@ -12,12 +12,12 @@ export interface NodeInterface<T> {
   isTarget: boolean;
 }
 
-export interface StrategyInterface<T> {
+export interface Strategy<T> {
 
   goalH: number;
   h([currentRow, currentCol]: number[], [targetRow, targetCol]: number[]): number;
 
   g(source: T, current: T): number;
 
-  successors(snapshot: T): T[];
+  successors(snapshot: T, secondPhase: boolean): T[];
 }

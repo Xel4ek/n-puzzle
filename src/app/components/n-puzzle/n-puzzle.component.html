@@ -1,5 +1,24 @@
-<div class="btn__block main__btns">
-  <div (click)="heapTest()" class="btn shine">Test</div>
+<div class="control-block">
+  <mat-form-field appearance="fill">
+    <mat-label>Select size</mat-label>
+    <mat-select [(value)]="size">
+      <mat-option [value]="3">Size 3x3</mat-option>
+      <mat-option [value]="4">Size 4x4</mat-option>
+    </mat-select>
+  </mat-form-field>
+  <mat-form-field appearance="fill">
+    <mat-label>Select predict style</mat-label>
+    <mat-select [(value)]="algorithm">
+      <mat-option value="manhattan">Manhattan</mat-option>
+    </mat-select>
+  </mat-form-field>
+  <mat-form-field appearance="fill">
+    <mat-label>Select priority queue</mat-label>
+    <mat-select [(value)]="heap">
+      <mat-option value="left">Left Heap</mat-option>
+      <mat-option value="binary">Binary Heap</mat-option>
+    </mat-select>
+  </mat-form-field>
 </div>
 <div class="btn__block main__btns">
   <label class="btn shine input__hidden">
@@ -14,28 +33,22 @@
 <mat-accordion>
   <mat-expansion-panel>
     <mat-expansion-panel-header>
-      <mat-panel-title>
-       Calculations: {{results.length}}
-      </mat-panel-title>
-      <mat-panel-description>
-       Total information
-      </mat-panel-description>
+      <mat-panel-title> Calculations: {{ results.length }} </mat-panel-title>
+      <mat-panel-description> Total information </mat-panel-description>
     </mat-expansion-panel-header>
     <app-total-information></app-total-information>
   </mat-expansion-panel>
 
   <mat-expansion-panel *ngFor="let result of results.reverse(); index as i">
     <mat-expansion-panel-header>
-      <mat-panel-title>
-        Calculation #{{results.length - i}}
-      </mat-panel-title>
+      <mat-panel-title> Calculation #{{ results.length - i }} </mat-panel-title>
       <mat-panel-description>
-        Get: {{result.done | date: 'HH:mm:ss'}}
+        Get: {{ result.done | date: "HH:mm:ss" }}
       </mat-panel-description>
     </mat-expansion-panel-header>
-    <app-npuzzle-result [result]="result" [index]="results.length - i"> </app-npuzzle-result>
+    <app-n-puzzle-result
+      [index]="results.length - i"
+      [result]="result"
+    ></app-n-puzzle-result>
   </mat-expansion-panel>
 </mat-accordion>
-
-
-

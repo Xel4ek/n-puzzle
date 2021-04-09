@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { NPuzzleComponent } from './n-puzzle.component';
-import { NPuzzleVisualizatorComponent } from './npuzzle-visualizator/npuzzle-visualizator.component';
+import { NPuzzleVisualizerComponent } from './n-puzzle-visualizer/n-puzzle-visualizer.component';
 
 const routes: Routes = [
   {
@@ -10,7 +10,7 @@ const routes: Routes = [
   },
   {
     path: 'vis',
-    component: NPuzzleVisualizatorComponent,
+    component: NPuzzleVisualizerComponent,
   },
 ];
 

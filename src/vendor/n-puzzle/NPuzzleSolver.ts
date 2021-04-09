@@ -1,12 +1,11 @@
-import { Node, NodeFactory } from './Node';
 import { NPuzzle } from './NPuzzle';
-import { Strategy } from './Strategy';
+import { StrategyFactory } from './StrategyFactory';
 import { PriorityQueue } from '../priority-queue/priority-queue';
 import { NPuzzleValidator } from './NPuzzleValidator';
 import { HeapInterface } from '../heap/heap.interface';
+import { Strategy } from './puzzle.interfaces';
 
 export interface NPuzzleSolverReport<T> {
-  selectedStates: number;
   implementsNodeCount: number;
   requiredSteps: number;
   solvable: boolean;
@@ -14,94 +13,128 @@ export interface NPuzzleSolverReport<T> {
   sourceInstance: NPuzzle;
   done: number;
   timeUsed: number; // milliseconds
+  closedNodes: number;
 }
 
 export class NPuzzleSolver<T extends HeapInterface<P>, P extends NPuzzle> {
   private implementsNodeCount = 0;
-  private timeUsed = 0;
-  private solvable?: boolean;
+  private readonly solvable: boolean;
   private solution?: string;
   private readonly priorityQueue: PriorityQueue<T, P>;
+  private closedNodes = 0;
+  private startTime = performance.now();
 
   constructor(
     private readonly heapClass: new () => T,
-    private readonly strategy: Strategy<P>,
+    private readonly strategyConfig: Strategy<P>,
     private readonly sourceInstance: P,
     private readonly targetInstance: P
   ) {
-    this.priorityQueue = new PriorityQueue<T, P>(heapClass);
     this.sourceInstance = sourceInstance;
-    this.sourceInstance.isTarget = strategy.isGoal(
-      sourceInstance,
-      targetInstance
-    );
+    this.priorityQueue = new PriorityQueue<T, P>(heapClass);
     this.targetInstance = targetInstance;
+    this.solvable = new NPuzzleValidator().validate(this.sourceInstance);
   }
 
-  solve(): NPuzzleSolverReport<P> {
-    this.solvable = new NPuzzleValidator().validate(this.sourceInstance);
-    if (!this.solvable) {
-      return {
-        selectedStates: 0,
-        implementsNodeCount: 1,
-        requiredSteps: 0,
-        solvable: this.solvable,
-        done: Date.now(),
-        timeUsed: 0,
-        sourceInstance: this.sourceInstance,
-        solution: '',
-      };
-    }
-    let open = 0;
-    let close = 0;
-    const startTime = performance.now();
-    const holder = new Set<string>();
-    // this.priorityQueue.insert(
-    //   this.sourceInstance.history.length +
-    //     this.strategy.h(this.sourceInstance, this.targetInstance),
-    //   this.sourceInstance
-    // );
-    let entity: P | undefined;
-    if (!this.sourceInstance.isTarget) {
-      entity = this.sourceInstance;
-    }
-    for (; entity && !this.solution; entity = this.priorityQueue.pop()) {
-      close++;
-      if (open % 1e6 < 2) {
-        console.log('queue: ', this.priorityQueue.size / 1e6, 'm');
-        console.log('open: ', open / 1e6, 'm');
-        console.log('close: ', close / 1e6, 'm');
-      }
-      holder.add(entity.instance.join(' '));
-      for (const child of this.strategy.successors(entity)) {
-        if (!holder.has(child.instance.join(' '))) {
-          this.implementsNodeCount++;
-          open++;
-          child.isTarget = this.strategy.isGoal(child, this.targetInstance);
-          if (child.isTarget) {
-            this.solution = child.history;
-            break;
-          }
-          this.priorityQueue.insert(
-            child.history.length + this.strategy.h(child, this.targetInstance),
-            child
-          );
-        }
-      }
-    }
-    console.log(this.priorityQueue.size);
-    this.timeUsed = performance.now() - startTime;
-    // console.error('FINISH');
-    // console.log(holder);
+  get result(): NPuzzleSolverReport<T> {
     return {
-      selectedStates: holder.size,
+      closedNodes: this.closedNodes,
       implementsNodeCount: this.implementsNodeCount,
       requiredSteps: this.solution?.length ?? 0,
       sourceInstance: this.sourceInstance,
       solution: this.solution ?? '',
       solvable: this.solvable,
       done: Date.now(),
-      timeUsed: this.timeUsed,
+      timeUsed: performance.now() - this.startTime,
     };
+  }
+
+  solve(): NPuzzleSolverReport<P> {
+    this.startTime = performance.now();
+    if (!this.solvable) {
+      return this.result;
+    }
+    let simpled;
+    let secondPhase;
+    if (this.sourceInstance.size > 3) {
+      simpled = this.simplifier();
+      secondPhase = true;
+    }
+    this.simpleSolve(simpled ?? this.sourceInstance, secondPhase);
+    return this.result;
+  }
+
+  private simplifier(): P | undefined {
+    const holder = new Set<string>();
+    const strategy = new StrategyFactory<P>(this.strategyConfig);
+    this.sourceInstance.isTarget = strategy.isGoal(
+      this.sourceInstance,
+      this.targetInstance
+    );
+    let entity: P | undefined;
+    if (!this.sourceInstance.isTarget) {
+      entity = this.sourceInstance;
+    }
+    for (; entity && !this.solution; entity = this.priorityQueue.pop()) {
+      this.closedNodes++;
+     // this.logger();
+      holder.add(entity.instance.join(' '));
+      for (const child of strategy.successors(entity)) {
+        if (!holder.has(child.instance.join(' '))) {
+          this.implementsNodeCount++;
+          child.isTarget = strategy.isGoal(child, this.targetInstance);
+          if (child.isTarget || strategy.hybrid(child)) {
+            return child;
+          }
+          this.priorityQueue.insert(
+            child.history.length + strategy.h(child, this.targetInstance),
+            child
+          );
+        }
+      }
+    }
+    return undefined;
+  }
+
+  private simpleSolve(sourceInstance: P, secondPhase = false): void {
+    this.priorityQueue.clear();
+    const strategy = new StrategyFactory<P>(this.strategyConfig, secondPhase);
+    const holder = new Set<string>();
+    sourceInstance.isTarget = strategy.isGoal(
+      sourceInstance,
+      this.targetInstance
+    );
+    let entity: P | undefined;
+    if (!sourceInstance.isTarget) {
+      entity = sourceInstance;
+    }
+    for (; entity && !this.solution; entity = this.priorityQueue.pop()) {
+      this.closedNodes++;
+      // this.logger();
+      holder.add(entity.instance.join(' '));
+      for (const child of strategy.successors(entity)) {
+        if (!holder.has(child.instance.join(' '))) {
+          this.implementsNodeCount++;
+          child.isTarget = strategy.isGoal(child, this.targetInstance);
+          if (child.isTarget) {
+            this.solution = child.history;
+            break;
+          }
+          this.priorityQueue.insert(
+            child.history.length + strategy.h(child, this.targetInstance),
+            child
+          );
+        }
+      }
+    }
+  }
+
+  private logger(step = 1e5): void {
+    if (this.closedNodes % step === 0) {
+      console.group('[Info] : ', this.closedNodes / 1e6, 'M');
+      console.log('queue: ', this.priorityQueue.size / 1e6, 'M');
+      console.log('open: ', this.implementsNodeCount / 1e6, 'M');
+      console.groupEnd();
+    }
   }
 }

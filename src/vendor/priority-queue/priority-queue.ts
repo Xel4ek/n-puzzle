@@ -1,24 +1,31 @@
 import { HeapInterface } from '../heap/heap.interface';
 
 export class PriorityQueue<P extends HeapInterface<T>, T> {
-  private readonly heap: P;
-  private cont = 0;
+  private heap: P;
+  private count = 0;
+
   constructor(private heapClass: new () => P) {
     this.heap = new heapClass();
   }
-  pop(): T|undefined {
-    this.cont--;
+
+  get size(): number {
+    return this.count;
+  }
+
+  pop(): T | undefined {
+    this.count--;
     return this.heap.pop();
   }
+
   insert(key: number, item: T): void {
-    // console.warn("INSETED", key);
-    // @ts-ignore
-    // item?.snapshot?.show();
-    this.cont++;
+    this.count++;
     this.heap.insert(key, item);
   }
-  get size(): number {
-    return this.cont;
-    // return this.heap.size;
+
+  clear(): number {
+    const count = this.count;
+    this.count = 0;
+    this.heap = new this.heapClass();
+    return count;
   }
 }

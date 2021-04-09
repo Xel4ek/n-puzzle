@@ -1,10 +1,10 @@
-import { StrategyInterface } from './puzzle.interfaces';
+import { Strategy } from './puzzle.interfaces';
 import { MappedNPuzzle, NPuzzle } from './NPuzzle';
 
-export class Strategy<T extends NPuzzle> {
-  private readonly strategy: StrategyInterface<T>;
+export class StrategyFactory<T extends NPuzzle> {
+  private readonly strategy: Strategy<T>;
 
-  constructor(strategy: StrategyInterface<T>) {
+  constructor(strategy: Strategy<T>, private readonly secondPhase: boolean = false) {
     this.strategy = strategy;
   }
 
@@ -36,6 +36,10 @@ export class Strategy<T extends NPuzzle> {
   }
 
   successors(snapshot: T): T[] {
-    return this.strategy.successors(snapshot);
+    return this.strategy.successors(snapshot, this.secondPhase);
+  }
+
+  hybrid({ instance }: T): boolean {
+    return instance[0] === 1 && instance[1] === 2 && instance[2] === 3 && instance[3] === 4;
   }
 }

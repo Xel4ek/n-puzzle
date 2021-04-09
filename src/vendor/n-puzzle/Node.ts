@@ -1,5 +1,5 @@
 import { NodeInterface } from './puzzle.interfaces';
-import { Strategy } from './Strategy';
+import { StrategyFactory } from './StrategyFactory';
 import { NPuzzle } from './NPuzzle';
 
 export class Node<T> implements NodeInterface<T> {
@@ -36,11 +36,11 @@ export class Node<T> implements NodeInterface<T> {
 }
 
 export class NodeFactory<T extends NPuzzle> {
-  private readonly strategy: Strategy<T>;
+  private readonly strategy: StrategyFactory<T>;
   private readonly sourceInstance: T;
   private readonly targetInstance: T;
 
-  constructor(strategy: Strategy<T>, sourceInstance: T, targetInstance: T) {
+  constructor(strategy: StrategyFactory<T>, sourceInstance: T, targetInstance: T) {
     this.strategy = strategy;
     this.sourceInstance = sourceInstance;
     this.targetInstance = targetInstance;

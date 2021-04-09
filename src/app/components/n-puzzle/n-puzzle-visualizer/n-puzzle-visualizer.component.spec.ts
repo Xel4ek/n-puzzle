@@ -1,20 +1,20 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { NPuzzleVisualizatorComponent } from './npuzzle-visualizator.component';
+import { NPuzzleVisualizerComponent } from './n-puzzle-visualizer.component';
 
 describe('NPuzzleVisualizatorComponent', () => {
-  let component: NPuzzleVisualizatorComponent;
-  let fixture: ComponentFixture<NPuzzleVisualizatorComponent>;
+  let component: NPuzzleVisualizerComponent;
+  let fixture: ComponentFixture<NPuzzleVisualizerComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ NPuzzleVisualizatorComponent ]
+      declarations: [ NPuzzleVisualizerComponent ]
     })
     .compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(NPuzzleVisualizatorComponent);
+    fixture = TestBed.createComponent(NPuzzleVisualizerComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

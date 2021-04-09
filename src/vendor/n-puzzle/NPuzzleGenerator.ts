@@ -25,20 +25,20 @@ export class NPuzzleGenerator {
   }
 
   generate(): NPuzzle {
-    for (let valid = false; !valid; ) {
-      this.instance = [...Array(this.size * this.size).keys()].sort(
-        (a, b) => 0.5 - Math.random()
-      );
-      console.log('new');
-      valid = new NPuzzleValidator().validate(this.instance);
-    }
-    // const valid = new NPuzzleValidator().validate(this.instance);
-    // if (
-    //   (valid && this.key === 'unsolvable') ||
-    //   (!valid && this.key === 'solvable')
-    // ) {
-    //   this.inversion();
+    // for (let valid = false; !valid; ) {
+    //   this.instance = [...Array(this.size * this.size).keys()].sort(
+    //     (a, b) => 0.5 - Math.random()
+    //   );
+    //   console.log('new');
+    //   valid = new NPuzzleValidator().validate(this.instance);
     // }
+    const valid = new NPuzzleValidator().validate(this.instance);
+    if (
+      (valid && this.key === 'unsolvable') ||
+      (!valid && this.key === 'solvable')
+    ) {
+      this.inversion();
+    }
     return new MappedNPuzzle(this.size, this.instance);
   }
 

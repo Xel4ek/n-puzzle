@@ -1,0 +1,20 @@
+.panels {
+  display: grid;
+  grid-column-gap: 1vmin;
+  grid-row-gap: 1vmin;
+}
+
+.panels .panel {
+  border: 2vmin solid;
+  width: 16vmin;
+  height: 16vmin;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+  font-size: 16px;
+}
+.panels .space {
+  width: 20vmin;
+  height: 20vmin;
+}

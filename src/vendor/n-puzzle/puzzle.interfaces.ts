@@ -1,9 +1,8 @@
-import { Point } from './Point';
-
-export interface NPuzzleInterface<T> {
+export interface NPuzzleInterface {
   instance: number[];
   size: number;
-  pivot: T;
+  history: string;
+  isTarget: boolean;
 }
 
 export interface NodeInterface<T> {

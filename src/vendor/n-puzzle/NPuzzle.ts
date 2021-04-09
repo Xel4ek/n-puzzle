@@ -1,18 +1,20 @@
 import { NPuzzleInterface } from './puzzle.interfaces';
-import { Point } from './Point';
 
-export class NPuzzle implements NPuzzleInterface<Point> {
+export class NPuzzle implements NPuzzleInterface {
   instance: number[];
-  pivot: Point;
   size: number;
+  history: string;
+  isTarget: boolean;
 
   constructor(
     size: number,
     instance: number[],
-    pivot?: Point,
+    history?: string,
+    isTarget?: boolean
   ) {
+    this.history = history ?? '';
+    this.isTarget = isTarget ?? false;
     this.size = size;
-    this.pivot = pivot ?? new Point(size, instance);
     this.instance = instance;
   }
 
@@ -22,17 +24,17 @@ export class NPuzzle implements NPuzzleInterface<Point> {
       console.log(this.instance.slice(i * this.size, (i + 1) * this.size));
     }
     // console.log({last: this.lastModified});
-    console.log({pivot: this.pivot});
     console.groupEnd();
   }
 }
 
 export class MappedNPuzzle extends NPuzzle {
-  mapInstance: Map<number, Pick<Point, 'row' | 'col'>>;
+  mapInstance: Map<number, { row: number; col: number }>;
 
-  constructor(size: number, instance: number[], pivot?: Point) {
-    super(size, instance, pivot);
-    this.mapInstance = new Map<number, Pick<Point, 'row' | 'col'>>();
+  constructor(size: number, instance: number[]) {
+    super(size, instance);
+
+    this.mapInstance = new Map<number, { row: number; col: number }>();
 
     instance.map((entry, index) => {
       this.mapInstance.set(entry, {

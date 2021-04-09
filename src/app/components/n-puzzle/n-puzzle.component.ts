@@ -3,7 +3,7 @@ import { fromEvent } from 'rxjs';
 import { filter, first, map, mergeMap, tap } from 'rxjs/operators';
 import { Strategy } from '../../../vendor/n-puzzle/Strategy';
 import { MappedNPuzzle, NPuzzle } from '../../../vendor/n-puzzle/NPuzzle';
-import { Point } from '../../../vendor/n-puzzle/Point';
+
 import {
   NPuzzleSolver,
   NPuzzleSolverReport,
@@ -11,7 +11,6 @@ import {
 import { NPuzzleGenerator } from '../../../vendor/n-puzzle/NPuzzleGenerator';
 import { PriorityQueue } from '../../../vendor/priority-queue/priority-queue';
 import { LeftHeap } from '../../../vendor/heap/left-heap/LeftHeap';
-import { Node } from '../../../vendor/n-puzzle/Node';
 import { DataHolderService } from '../../services/data-holder/data-holder.service';
 
 @Component({
@@ -24,6 +23,7 @@ export class NPuzzleComponent implements OnInit {
   calculated = false;
   size = 3;
   results: NPuzzleSolverReport<NPuzzle>[] = [];
+
   constructor(
     private readonly zone: NgZone,
     private readonly dataHolder: DataHolderService
@@ -81,49 +81,63 @@ export class NPuzzleComponent implements OnInit {
       // });
       // return predict;
       return lhs.instance.reduce((acc, cur, index) => {
+        // if (cur) {
         const point = rhs.mapInstance.get(cur);
         if (point) {
           const { row, col } = point;
           return (
             acc +
             Math.abs((index % size) - col) +
-            Math.abs(Math.floor(index / size) - row)
+            Math.abs(Math.trunc(index / size) - row)
           );
+        } else {
+          throw new Error('no Map');
         }
-        return acc;
+        // }
+        // return acc;
       }, 0);
     };
 
     const generate = (
-      snapshot: NPuzzle,
+      parent: NPuzzle,
       drow: number,
       dcol: number
     ): NPuzzle | undefined => {
-      const newRow = snapshot.pivot.row + drow;
-      const newCol = snapshot.pivot.col + dcol;
-      const size = snapshot.size;
+      const index = parent.instance.indexOf(0);
+      const size = parent.size;
+      const newRow = Math.trunc(index / size) + drow;
+      const newCol = (index % size) + dcol;
       if (
         newRow >= size ||
         newRow < 0 ||
         newCol >= size ||
         newCol < 0
-        // ||
-        // (newCol === snapshot.lastModified?.col &&
-        //   newRow === snapshot.lastModified?.row)
       ) {
         return;
       }
       const newIndex = newRow * size + newCol;
-      const instance = [...snapshot.instance];
-      [instance[newIndex], instance[snapshot.pivot.index]] = [
-        instance[snapshot.pivot.index],
+
+      const action = (() => {
+        if (dcol === 1) {
+          return 'r';
+        }
+        if (dcol === -1) {
+          return 'l';
+        }
+        if (drow === 1) {
+          return 'd';
+        }
+        if (drow === -1) {
+          return 'u';
+        }
+        return '';
+      })();
+      const instance = [...parent.instance];
+      [instance[newIndex], instance[index]] = [
+        instance[index],
         instance[newIndex],
       ];
-      return new NPuzzle(
-        snapshot.size,
-        instance,
-        new Point(newIndex, newRow, newCol)
-      );
+      return new NPuzzle(size, instance, parent.history + action);
     };
     const produce = (snapshot: NPuzzle): NPuzzle[] => {
       const queue = [];
@@ -150,7 +164,9 @@ export class NPuzzleComponent implements OnInit {
       h: (current: NPuzzle, goal: MappedNPuzzle) => taxicabH(current, goal),
       g: (source: MappedNPuzzle, current: NPuzzle) => 1,
       successors: (snapshot: NPuzzle) => produce(snapshot),
-      isGoal: (snapshot, goal: MappedNPuzzle) => taxicabH(snapshot, goal) === 0,
+      isGoal: (snapshot, goal: MappedNPuzzle) => {
+        return taxicabH(snapshot, goal) === 0;
+      },
     });
     const sourceInstance = this.puzzle;
     // new MappedNPuzzle(3, [7, 2, 3, 1, 8, 4, 6, 5, 0]);
@@ -171,10 +187,10 @@ export class NPuzzleComponent implements OnInit {
     //   2, 24, 0, 21, 22,
     //   5, 19, 14, 20, 9,
     //   7, 1, 3, 13, 12,]);
-    const targetInstance = new MappedNPuzzle(
-      this.puzzle.size,
-      [...this.puzzle.instance].sort()
-    );
+    const targetInstance = (() => {
+      const target = [...this.puzzle.instance].sort(((a, b) => a - b));
+      return new MappedNPuzzle(this.puzzle.size, [...target.slice(1), 0]);
+    })();
     // const targetInstance = new MappedNPuzzle(4, [
     //   1, 2, 3, 4,
     //   5, 6, 7, 8,
@@ -190,7 +206,7 @@ export class NPuzzleComponent implements OnInit {
 
     // sourceInstance.show();
     // console.log(strategy.h(sourceInstance, targetInstance));
-    const solver = new NPuzzleSolver<LeftHeap<Node<NPuzzle>>, NPuzzle>(
+    const solver = new NPuzzleSolver<LeftHeap<NPuzzle>, NPuzzle>(
       LeftHeap,
       strategy,
       sourceInstance,
@@ -221,8 +237,16 @@ export class NPuzzleComponent implements OnInit {
   }
 
   generate(): void {
-    this.puzzle = new NPuzzleGenerator(this.size).generate();
+    this.puzzle =
+      // new MappedNPuzzle(4, [
+      //   1, 2, 3, 4,
+      //   5, 6, 7, 8,
+      //   9, 10, 11, 12,
+      //   13, 14, 15, 0]);
+      // new MappedNPuzzle(3, [1, 2, 3, 4, 5, 6, 7, 8, 0]);
+    new NPuzzleGenerator(this.size).generate();
   }
+
   clear(): void {
     this.results = [];
     this.dataHolder.updateResult([]);

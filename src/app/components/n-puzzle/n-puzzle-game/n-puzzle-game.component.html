@@ -1,0 +1,20 @@
+<div class="panels">
+  <div class="panel btn" *ngFor="let item of game"
+       [ngClass]="{'hidden': item === 0, 'can-move': canMove(item), 'complete': solved}"
+       (click)="canMove(item) ? move(item): '' " ><span class="text3d">{{item}}</span></div>
+</div>
+<div class="control">
+  <div *ngIf="solved; else score" class="wavetext">
+      <span *ngFor="let letter of ('You&nbsp;won&nbsp;in&nbsp;' + steps + '&nbsp;moves!').split('')">{{letter}}</span>
+  </div>
+  <ng-template #score>
+    <div class="score">
+      {{steps}} move makes
+    </div>
+  </ng-template>
+  <div class="btn__block">
+    <div class="btn"  [ngClass]="{'winner': solved }" (click)="reset()">
+      Reset
+    </div>
+  </div>
+</div>

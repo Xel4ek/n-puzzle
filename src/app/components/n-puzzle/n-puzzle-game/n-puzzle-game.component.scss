@@ -1,0 +1,27 @@
+:host {
+  display: flex;
+  gap: 3rem;
+  .panels {
+    padding-left: 3rem;
+  }
+  .winner {
+    animation: winner 2s infinite;
+  }
+  .score {
+    font-size: 2rem;
+  }
+  .control {
+    display: flex;
+    flex-direction: column;
+    .btn__block {
+      display: flex;
+    }
+  }
+}
+
+@keyframes winner {
+  from, to {transform: scale(1)}
+  25%,75% {transform: scale(.9)}
+  50% {transform: scale(1.1)}
+
+}

@@ -18,13 +18,6 @@ export class NPuzzleGridComponent implements OnInit, AfterViewInit{
     this.size = this.result.sourceInstance.size;
   }
 
-  applyStyles(): object {
-    return {
-      'grid-template-columns': `repeat(${this.size}, 1fr)`,
-      'grid-template-rows': `repeat(${this.size}, 1fr)`,
-    };
-  }
-
   ngAfterViewInit(): void {
     this.elementRef.nativeElement.style.setProperty('--rowNum', this.result.sourceInstance.size);
   }

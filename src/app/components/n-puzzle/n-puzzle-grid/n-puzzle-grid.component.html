@@ -1,2 +1,4 @@
 <div class="panels" [ngStyle]="applyStyles()">
-  <div class="panel btn" *ngFor="let item of this.result.sourceInstance.instance">{{item}}</div>
+  <div class="panel btn" *ngFor="let item of this.result.sourceInstance.instance"
+       [ngClass]="{'hidden': item === 0}"><span class="text3d">{{item}}</span></div>
+</div>

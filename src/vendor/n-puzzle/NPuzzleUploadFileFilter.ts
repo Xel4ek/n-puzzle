@@ -9,7 +9,10 @@ export class NPuzzleUploadFileFilter {
     return /^\d+$/.test(tested.trim());
   }
   private static makeRow(value: string): number[] | undefined {
-    const rawRow = value.trim().split(' ').filter(el => el.trim().length);
+    const rawRow = value
+      .trim()
+      .split(' ')
+      .filter((el) => el.trim().length);
     const row: number[] = [];
     for (const entry of rawRow) {
       if (NPuzzleUploadFileFilter.isDigit(entry)) {
@@ -39,7 +42,12 @@ export class NPuzzleUploadFileFilter {
               instance.push(...row);
             }
           }
-          if (instance.length === size ** 2) {
+          if (
+            instance.length === size ** 2 &&
+            [...Array(size ** 2).keys()].every((digit) =>
+              instance.includes(digit)
+            )
+          ) {
             this.puzzles.push(new NPuzzle(size, instance));
           }
           i += j;

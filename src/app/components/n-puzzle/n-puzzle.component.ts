@@ -1,6 +1,15 @@
-import { Component, NgZone, OnInit } from '@angular/core';
-import { fromEvent } from 'rxjs';
-import { filter, first, map, mergeMap, tap } from 'rxjs/operators';
+import { Component, NgZone, OnDestroy, OnInit } from '@angular/core';
+import { fromEvent, Observable, partition, Subscription } from 'rxjs';
+import {
+  filter,
+  finalize,
+  first,
+  map,
+  mergeMap,
+  switchMap,
+  tap,
+  toArray,
+} from 'rxjs/operators';
 import { MappedNPuzzle, NPuzzle } from '@vendor/n-puzzle/NPuzzle';
 
 import {
@@ -14,6 +23,7 @@ import { DataHolderService } from '@services/data-holder/data-holder.service';
 import { MANHATTAN } from '@vendor/n-puzzle/strategy';
 import { Strategy } from '@vendor/n-puzzle/puzzle.interfaces';
 import { Heap } from '@vendor/heap/binary-heap/heap';
+import { NPuzzleUploadFileFilter } from '@vendor/n-puzzle/NPuzzleUploadFileFilter';
 
 type AlgorithmList = 'manhattan';
 const algorithmMAp: { [key in AlgorithmList]: Strategy<NPuzzle> } = {
@@ -26,20 +36,17 @@ type HeapList = 'left' | 'binary';
   templateUrl: './n-puzzle.component.html',
   styleUrls: ['./n-puzzle.component.scss'],
 })
-export class NPuzzleComponent implements OnInit {
-  puzzle: any;
+export class NPuzzleComponent implements OnInit, OnDestroy {
+  uploaded = 0;
   calculated = false;
   size = 3;
   algorithm: AlgorithmList = 'manhattan';
   heap: HeapList = 'left';
   results: NPuzzleSolverReport[] = [];
-
   constructor(
     private readonly zone: NgZone,
     private readonly dataHolder: DataHolderService
-  ) {
-    this.generate();
-  }
+  ) {}
 
   ngOnInit(): void {}
 
@@ -50,34 +57,32 @@ export class NPuzzleComponent implements OnInit {
     const file = fileList[0];
     const reader = new FileReader();
     reader.readAsArrayBuffer(file);
-    fromEvent(reader, 'load')
-      .pipe(
-        first(),
-        map((result) => {
-          let binary = '';
-          const bytes = new Uint8Array((result?.target as any).result);
-          const length = bytes.byteLength;
-          for (let i = 0; i < length; i++) {
-            binary += String.fromCharCode(bytes[i]);
-          }
-          return binary;
-        }),
-        mergeMap((data) => data.split('\n')),
-        filter((str) => !str.startsWith('#') && !!str.trim().length),
-        tap((data) => console.log(data))
-      )
-      .subscribe({
-        complete: () => console.log('Done!'),
-      });
-    console.log(file);
-  }
-
-  solve(): void {
-    this.solver(this.puzzle);
-  }
-
-  generate(): void {
-    this.puzzle = new NPuzzleGenerator(this.size).generate();
+    const sub: Subscription = fromEvent(reader, 'load').pipe(
+      first(),
+      map((result) => {
+        let binary = '';
+        const bytes = new Uint8Array((result?.target as any).result);
+        const length = bytes.byteLength;
+        for (let i = 0; i < length; i++) {
+          binary += String.fromCharCode(bytes[i]);
+        }
+        return binary;
+      }),
+      mergeMap((data) => data.split('\n')),
+      filter((str) => !str.startsWith('#') && !!str.trim().length),
+      toArray(),
+      mergeMap((value) => {
+        const uploaded = new NPuzzleUploadFileFilter(value).getPuzzles();
+        this.uploaded += uploaded.length;
+        return uploaded;
+      }),
+      map((puzzle) => this.solver(puzzle)),
+    ).subscribe({
+      complete: () => {
+        console.log('Done !');
+        sub.unsubscribe();
+      },
+    });
   }
 
   clear(): void {
@@ -88,6 +93,7 @@ export class NPuzzleComponent implements OnInit {
   solveFromGame(puzzle: NPuzzle): void {
     this.solver(puzzle);
   }
+
   private solver(puzzle: NPuzzle): void {
     if (this.calculated) {
       return;
@@ -95,8 +101,8 @@ export class NPuzzleComponent implements OnInit {
     this.calculated = true;
     const sourceInstance = puzzle;
     const targetInstance = (() => {
-      const target = [...this.puzzle.instance].sort((a, b) => a - b);
-      return new MappedNPuzzle(this.puzzle.size, [...target.slice(1), 0]);
+      const target = [...puzzle.instance].sort((a, b) => a - b);
+      return new MappedNPuzzle(puzzle.size, [...target.slice(1), 0]);
     })();
     let solver: NPuzzleSolver<any, any>;
     if (this.heap === 'left') {
@@ -115,11 +121,14 @@ export class NPuzzleComponent implements OnInit {
         targetInstance
       );
     }
-    const result =  this.zone.runOutsideAngular(() => {
+    const result = this.zone.runOutsideAngular(() => {
       return solver.solve();
     });
     this.results.push(result);
     this.dataHolder.updateResult(this.results);
     this.calculated = false;
+  }
+
+  ngOnDestroy(): void {
   }
 }

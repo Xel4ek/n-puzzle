@@ -33,7 +33,7 @@ export class NPuzzleSolver<T extends HeapInterface<P>, P extends NPuzzle> {
     this.sourceInstance = sourceInstance;
     this.priorityQueue = new PriorityQueue<T, P>(heapClass);
     this.targetInstance = targetInstance;
-    this.solvable = new NPuzzleValidator().validate(this.sourceInstance);
+    this.solvable = NPuzzleValidator.validate(this.sourceInstance);
   }
 
   get result(): NPuzzleSolverReport {

@@ -24,7 +24,7 @@
 <div class="btn__block main__btns">
   <label class="btn shine input__hidden">
     Select File
-    <input #input (change)="uploadFile(input.files)" type="file" />
+    <input #input (change)="uploadFile(input.files); input.value = ''" type="file" />
   </label>
 <!--  <div (click)="solve()" class="btn shine">Solve</div>-->
 <!--  <div (click)="generate(); solve()" class="btn shine">Generate & Solve</div>-->

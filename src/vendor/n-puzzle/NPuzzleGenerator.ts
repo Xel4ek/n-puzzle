@@ -32,7 +32,7 @@ export class NPuzzleGenerator {
     //   console.log('new');
     //   valid = new NPuzzleValidator().validate(this.instance);
     // }
-    const valid = new NPuzzleValidator().validate(this.instance);
+    const valid = NPuzzleValidator.validate(this.instance);
     if (
       (valid && this.key === 'unsolvable') ||
       (!valid && this.key === 'solvable')

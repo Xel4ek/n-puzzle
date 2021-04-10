@@ -17,15 +17,6 @@ export class NPuzzle implements NPuzzleInterface {
     this.size = size;
     this.instance = instance;
   }
-
-  // show(): void {
-  //   console.group('[NPuzzle]');
-  //   for (let i = 0; i < this.size; i++) {
-  //     console.log(this.instance.slice(i * this.size, (i + 1) * this.size));
-  //   }
-  //   // console.log({last: this.lastModified});
-  //   console.groupEnd();
-  // }
 }
 
 export class MappedNPuzzle extends NPuzzle {

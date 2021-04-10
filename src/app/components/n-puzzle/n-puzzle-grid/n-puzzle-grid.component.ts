@@ -8,7 +8,7 @@ import { NPuzzle } from '@vendor/n-puzzle/NPuzzle';
   styleUrls: ['./n-puzzle-grid.component.scss'],
 })
 export class NPuzzleGridComponent implements OnInit, AfterViewInit{
-  @Input() result!: NPuzzleSolverReport<NPuzzle>;
+  @Input() result!: NPuzzleSolverReport;
   size = 0;
 
   constructor(private readonly elementRef: ElementRef) {

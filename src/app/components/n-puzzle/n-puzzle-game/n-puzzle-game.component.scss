@@ -12,9 +12,16 @@
   }
   .control {
     display: flex;
+    gap: 1rem;
     flex-direction: column;
     .btn__block {
+      gap: 1rem;
       display: flex;
+      .btn:hover {
+        i {
+          animation: fa-spin 2s infinite reverse;
+        }
+      }
     }
   }
 }

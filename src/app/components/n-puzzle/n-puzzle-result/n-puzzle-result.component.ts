@@ -8,7 +8,7 @@ import { NPuzzle } from '@vendor/n-puzzle/NPuzzle';
   styleUrls: ['./n-puzzle-result.component.scss'],
 })
 export class NPuzzleResultComponent implements OnInit {
-  @Input() result!: NPuzzleSolverReport<NPuzzle>;
+  @Input() result!: NPuzzleSolverReport;
   @Input() index!: number;
   constructor() {}
 

@@ -5,7 +5,7 @@ import { NPuzzleValidator } from './NPuzzleValidator';
 import { HeapInterface } from '../heap/heap.interface';
 import { Strategy } from './puzzle.interfaces';
 
-export interface NPuzzleSolverReport<T> {
+export interface NPuzzleSolverReport {
   implementsNodeCount: number;
   requiredSteps: number;
   solvable: boolean;
@@ -36,7 +36,7 @@ export class NPuzzleSolver<T extends HeapInterface<P>, P extends NPuzzle> {
     this.solvable = new NPuzzleValidator().validate(this.sourceInstance);
   }
 
-  get result(): NPuzzleSolverReport<T> {
+  get result(): NPuzzleSolverReport {
     return {
       closedNodes: this.closedNodes,
       implementsNodeCount: this.implementsNodeCount,
@@ -49,7 +49,7 @@ export class NPuzzleSolver<T extends HeapInterface<P>, P extends NPuzzle> {
     };
   }
 
-  solve(): NPuzzleSolverReport<P> {
+  solve(): NPuzzleSolverReport {
     this.startTime = performance.now();
     if (!this.solvable) {
       return this.result;

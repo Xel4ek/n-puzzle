@@ -32,7 +32,7 @@ export class NPuzzleComponent implements OnInit {
   size = 3;
   algorithm: AlgorithmList = 'manhattan';
   heap: HeapList = 'left';
-  results: NPuzzleSolverReport<NPuzzle>[] = [];
+  results: NPuzzleSolverReport[] = [];
 
   constructor(
     private readonly zone: NgZone,
@@ -73,12 +73,27 @@ export class NPuzzleComponent implements OnInit {
   }
 
   solve(): void {
+    this.solver(this.puzzle);
+  }
+
+  generate(): void {
+    this.puzzle = new NPuzzleGenerator(this.size).generate();
+  }
+
+  clear(): void {
+    this.results = [];
+    this.dataHolder.updateResult([]);
+  }
+
+  solveFromGame(puzzle: NPuzzle): void {
+    this.solver(puzzle);
+  }
+  private solver(puzzle: NPuzzle): void {
     if (this.calculated) {
       return;
     }
     this.calculated = true;
-
-    const sourceInstance = this.puzzle;
+    const sourceInstance = puzzle;
     const targetInstance = (() => {
       const target = [...this.puzzle.instance].sort((a, b) => a - b);
       return new MappedNPuzzle(this.puzzle.size, [...target.slice(1), 0]);
@@ -100,20 +115,11 @@ export class NPuzzleComponent implements OnInit {
         targetInstance
       );
     }
-    const result = this.zone.runOutsideAngular(() => {
+    const result =  this.zone.runOutsideAngular(() => {
       return solver.solve();
     });
     this.results.push(result);
     this.dataHolder.updateResult(this.results);
     this.calculated = false;
-  }
-
-  generate(): void {
-    this.puzzle = new NPuzzleGenerator(this.size).generate();
-  }
-
-  clear(): void {
-    this.results = [];
-    this.dataHolder.updateResult([]);
   }
 }

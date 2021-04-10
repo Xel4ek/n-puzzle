@@ -1,6 +1,15 @@
-import { Component, ElementRef, Input, OnChanges, OnInit, SimpleChanges, } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  Input,
+  OnChanges,
+  OnInit,
+  SimpleChanges,
+  EventEmitter,
+  Output,
+} from '@angular/core';
 import { NPuzzleGenerator } from '@vendor/n-puzzle/NPuzzleGenerator';
-
+import { NPuzzle } from '@vendor/n-puzzle/NPuzzle';
 @Component({
   selector: 'app-n-puzzle-game[size]',
   templateUrl: './n-puzzle-game.component.html',
@@ -8,17 +17,20 @@ import { NPuzzleGenerator } from '@vendor/n-puzzle/NPuzzleGenerator';
 })
 export class NPuzzleGameComponent implements OnInit, OnChanges {
   @Input() size!: number;
+  private puzzle?: NPuzzle;
   game?: number[];
   steps = 0;
   target?: string;
   solved = false;
+  @Output() solveIt = new EventEmitter<NPuzzle>();
+  constructor(private readonly elementRef: ElementRef) {}
 
-  constructor(private readonly elementRef: ElementRef) {
+  ngOnInit(): void {}
+  solveItPlz(): void {
+    if (this.game && this.puzzle) {
+      this.solveIt.emit({ ...this.puzzle, instance: this.game });
+    }
   }
-
-  ngOnInit(): void {
-  }
-
   ngOnChanges(changes: SimpleChanges): void {
     this.reset();
     this.elementRef.nativeElement.style.setProperty('--rowNum', this.size);
@@ -27,10 +39,19 @@ export class NPuzzleGameComponent implements OnInit, OnChanges {
   reset(): void {
     this.steps = 0;
     this.solved = false;
-    this.game = new NPuzzleGenerator(this.size).generate().instance;
-    this.target = [...[...this.game].sort((a, b) => a - b).slice(1), 0].join(' ');
+    this.puzzle = new NPuzzleGenerator(this.size).generate();
+    this.game = [...this.puzzle.instance];
+    this.target = [...[...this.game].sort((a, b) => a - b).slice(1), 0].join(
+      ' '
+    );
   }
 
+  restore(): void {
+    this.steps = 0;
+    if (this.puzzle) {
+      this.game = [...this.puzzle.instance];
+    }
+  }
   move(item: number): void {
     if (this.game) {
       const zero = this.game.indexOf(0);
@@ -56,7 +77,7 @@ export class NPuzzleGameComponent implements OnInit, OnChanges {
       const dRow = Math.abs(
         Math.trunc(index / this.size) - Math.trunc(zero / this.size)
       );
-      return (dCol === 1 && dRow === 0 ) || (dCol === 0 && dRow === 1);
+      return (dCol === 1 && dRow === 0) || (dCol === 0 && dRow === 1);
     }
     return false;
   }

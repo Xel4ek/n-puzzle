@@ -1,0 +1,37 @@
+$offset : -90px;
+$count : 40;
+$duration : 0.3;
+
+
+@keyframes wave {
+  from { transform : translateY(0); color: white; }
+  to   { transform : translateY( $offset ); }
+}
+
+.wavetext {
+  margin-top : 10em;
+  text-align : center;
+}
+
+
+.wavetext span {
+  display: inline-block;
+  font-family : "Fredoka One", sans-serif;
+  font-size : 70px;
+
+  animation-duration: #{$duration}s;
+  animation-name: wave;
+  animation-iteration-count: infinite;
+  animation-direction: alternate;
+}
+
+
+@for $i from 0 to $count {
+  .wavetext :nth-child( #{$count}n + #{$i} ) {
+    animation-delay :
+      -#{($count - $i) * 2 * $duration / $count }s;
+
+
+    color: rgba(100+$i * 20 % 155, 10, 100+ $i * 40 % 55, 1);
+  }
+}

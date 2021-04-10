@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, Input, OnInit } from '@angular/core';
 import { NPuzzleSolverReport } from '@vendor/n-puzzle/NPuzzleSolver';
 import { NPuzzle } from '@vendor/n-puzzle/NPuzzle';
 
@@ -7,21 +7,25 @@ import { NPuzzle } from '@vendor/n-puzzle/NPuzzle';
   templateUrl: './n-puzzle-grid.component.html',
   styleUrls: ['./n-puzzle-grid.component.scss'],
 })
-export class NPuzzleGridComponent implements OnInit {
+export class NPuzzleGridComponent implements OnInit, AfterViewInit{
   @Input() result!: NPuzzleSolverReport<NPuzzle>;
   size = 0;
 
-  constructor() {}
+  constructor(private readonly elementRef: ElementRef) {
+  }
 
   ngOnInit(): void {
     this.size = this.result.sourceInstance.size;
   }
 
   applyStyles(): object {
-    const styles = {
+    return {
       'grid-template-columns': `repeat(${this.size}, 1fr)`,
       'grid-template-rows': `repeat(${this.size}, 1fr)`,
     };
-    return styles;
+  }
+
+  ngAfterViewInit(): void {
+    this.elementRef.nativeElement.style.setProperty('--rowNum', this.result.sourceInstance.size);
   }
 }

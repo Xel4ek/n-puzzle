@@ -6,6 +6,7 @@
   box-shadow: 1px 1px 3px #737373;
   border-radius: .3rem;
   cursor: pointer;
+  font-style: italic;
 }
 
 .shine {

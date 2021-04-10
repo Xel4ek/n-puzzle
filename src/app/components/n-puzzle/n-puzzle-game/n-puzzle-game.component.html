@@ -1,6 +1,6 @@
 <div class="panels">
   <div class="panel btn" *ngFor="let item of game"
-       [ngClass]="{'hidden': item === 0, 'can-move': canMove(item), 'complete': solved}"
+       [ngClass]="{'hidden': item === 0, 'can-move shine': canMove(item), 'complete': solved}"
        (click)="canMove(item) ? move(item): '' " ><span class="text3d">{{item}}</span></div>
 </div>
 <div class="control">
@@ -13,8 +13,14 @@
     </div>
   </ng-template>
   <div class="btn__block">
-    <div class="btn"  [ngClass]="{'winner': solved }" (click)="reset()">
-      Reset
+    <div class="btn shine"  [ngClass]="{'winner': solved }" (click)="reset()">
+      <i class="fa fa-refresh" aria-hidden="true"></i> Reset
+    </div>
+    <div class="btn shine" (click)="restore()">
+      <i class="fas fa-undo-alt"></i> Restore
+    </div>
+    <div class="btn shine" (click)="solveItPlz()">
+      <i class="fas fa-biohazard"></i> Solve it plz!
     </div>
   </div>
 </div>

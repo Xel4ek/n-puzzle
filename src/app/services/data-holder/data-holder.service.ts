@@ -20,15 +20,15 @@ export class DataHolderService {
     return this.loading$.asObservable();
   }
 
-  updateResult(resultList: NPuzzleSolverReport<NPuzzle>[]): void {
+  updateResult(resultList: NPuzzleSolverReport[]): void {
     this.totalResult$.next({
       ...resultList.reduce(
-        (acc: any, npuzzlereport) => {
-          acc.totalRequiredSteps += npuzzlereport.requiredSteps;
-          acc.solvableCount += npuzzlereport.solvable ? 1 : 0;
-          acc.totalTime += npuzzlereport.timeUsed;
-          acc.totalStates += npuzzlereport.closedNodes;
-          acc.totalNodes += npuzzlereport.implementsNodeCount;
+        (acc: any, nPuzzleReport) => {
+          acc.totalRequiredSteps += nPuzzleReport.requiredSteps;
+          acc.solvableCount += nPuzzleReport.solvable ? 1 : 0;
+          acc.totalTime += nPuzzleReport.timeUsed;
+          acc.totalStates += nPuzzleReport.closedNodes;
+          acc.totalNodes += nPuzzleReport.implementsNodeCount;
           return acc;
         },
         {

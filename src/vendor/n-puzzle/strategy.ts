@@ -113,7 +113,7 @@ const BASE_STRATEGY: Omit<Strategy<NPuzzle>, 'h' | 'expansion'> = {
   },
 };
 
-export const MANHATTAN: Omit<Strategy<NPuzzle>, 'expansion'>  = {
+export const MANHATTAN: Omit<Strategy<NPuzzle>, 'expansion'> = {
   ...BASE_STRATEGY,
   h: taxicabH,
 };
@@ -123,46 +123,43 @@ export const WRONG_PLACE: Omit<Strategy<NPuzzle>, 'expansion'> = {
   h: wrongPlace,
 };
 
+const arrayConflict = (current: number[], target: number[]): number => {
+  const candidates: number[] = [];
+  for (const item of target) {
+    if (item !== 0) {
+      const currentIndex = current.indexOf(item);
+      if (currentIndex !== -1) {
+        candidates.push(currentIndex);
+      }
+    }
+  }
+  let score = 0;
+  if (candidates.length > 1) {
+    for (let i = 0; i < candidates.length - 1; ++i) {
+      for (let j = i + 1; j < candidates.length; ++j) {
+        if (candidates[i] > candidates[j]) {
+          score += 2;
+        }
+      }
+    }
+  }
+  return score;
+};
 
-export const LINEAR_CONFLICT: Expansion<NPuzzle | MappedNPuzzle> = (current, target) => {
-  if (!(target instanceof MappedNPuzzle)) {
-    throw new Error('target must implement MappedNPuzzle class');
+export const LINEAR_CONFLICT: Expansion<NPuzzle> = (
+  { instance },
+  { instance: target, size }
+) => {
+  let accumulator = 0;
+  for (let i = 0; i < size; ++i) {
+    accumulator += arrayConflict(
+      instance.slice(i  * size, (i + 1) * size),
+      target.slice(i * size, (i + 1) * size)
+    );
+    accumulator += arrayConflict(
+      instance.filter((_, index) => index % size === i),
+      target.filter((_, index) => index % size === i)
+    );
   }
-  return current.instance.reduce((acc, cur, currentIndex) => {
-    const point = target.mapInstance.get(cur);
-    if (point) {
-      const { index: targetIndex } = point;
-      return acc ;
-    } else {
-      throw new Error('no Map');
-    }
-  }, 0);
-};
-export const LAST_MOVIE: Expansion<NPuzzle | MappedNPuzzle> = (current, target) => {
-  if (!(target instanceof MappedNPuzzle)) {
-    throw new Error('target must implement MappedNPuzzle class');
-  }
-  return current.instance.reduce((acc, cur, currentIndex) => {
-    const point = target.mapInstance.get(cur);
-    if (point) {
-      const { index: targetIndex } = point;
-      return acc;
-    } else {
-      throw new Error('no Map');
-    }
-  }, 0);
-};
-export const CORNER_TILES: Expansion<NPuzzle | MappedNPuzzle> = (current, target) => {
-  if (!(target instanceof MappedNPuzzle)) {
-    throw new Error('target must implement MappedNPuzzle class');
-  }
-  return current.instance.reduce((acc, cur, currentIndex) => {
-    const point = target.mapInstance.get(cur);
-    if (point) {
-      const { index: targetIndex } = point;
-      return acc ;
-    } else {
-      throw new Error('no Map');
-    }
-  }, 0);
+  return accumulator;
 };

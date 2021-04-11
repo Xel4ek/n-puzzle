@@ -6,7 +6,7 @@ import { MappedNPuzzle, NPuzzle } from '@vendor/n-puzzle/NPuzzle';
 import { NPuzzleSolver, NPuzzleSolverReport, } from '@vendor/n-puzzle/NPuzzleSolver';
 import { LeftHeap } from '@vendor/heap/left-heap/LeftHeap';
 import { DataHolderService } from '@services/data-holder/data-holder.service';
-import { CORNER_TILES, LAST_MOVIE, LINEAR_CONFLICT, MANHATTAN, WRONG_PLACE, } from '@vendor/n-puzzle/strategy';
+import { LINEAR_CONFLICT, MANHATTAN, WRONG_PLACE, } from '@vendor/n-puzzle/strategy';
 import { Expansion, Strategy } from '@vendor/n-puzzle/puzzle.interfaces';
 import { Heap } from '@vendor/heap/binary-heap/heap';
 import { NPuzzleUploadFileFilter } from '@vendor/n-puzzle/NPuzzleUploadFileFilter';
@@ -21,13 +21,11 @@ export const ALGORITHMS_MAP: {
 };
 type HeapList = 'left' | 'binary';
 
-type ExpansionList = 'linearConflict' | 'lastMovie' | 'cornerTiles';
+type ExpansionList = 'linearConflict';
 export const EXPLANATIONS_MAP: {
   [key in ExpansionList]: Expansion<NPuzzle | MappedNPuzzle>;
 } = {
   linearConflict: LINEAR_CONFLICT,
-  lastMovie: LAST_MOVIE,
-  cornerTiles: CORNER_TILES,
 };
 
 @Component({
@@ -41,13 +39,10 @@ export class NPuzzleComponent implements OnInit, OnDestroy {
   algorithm: AlgorithmList = 'manhattan';
   expansionsKey: { key: ExpansionList; title: string }[] = [
     {key: 'linearConflict', title: 'Linear Conflict'},
-    {key: 'lastMovie', title: 'Last Movie'},
-    {key: 'cornerTiles', title: 'Corner Tiles'},
   ];
   heap: HeapList = 'left';
   results: NPuzzleSolverReport[] = [];
-  // expansions: Expansion<NPuzzle>[] = [];
-  expansions = new FormControl();
+  expansions = new FormControl([]);
   private sizeHolder = 3;
 
   constructor(

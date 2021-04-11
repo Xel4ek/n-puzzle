@@ -96,7 +96,6 @@ export class NPuzzleComponent implements OnInit, OnDestroy {
       )
       .subscribe({
         complete: () => {
-          console.log('Done !');
           sub.unsubscribe();
         },
       });

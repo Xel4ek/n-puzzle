@@ -1,6 +1,6 @@
 {
   "configVersion": 1,
-  "timestamp": 1618157164055,
+  "timestamp": 1618157983165,
   "index": "https://Xel4ek.github.io/n-puzzle/index.html",
   "assetGroups": [
     {
@@ -33,10 +33,10 @@
         "https://Xel4ek.github.io/n-puzzle/assets/icons/android-chrome-192x192.png",
         "https://Xel4ek.github.io/n-puzzle/assets/icons/android-chrome-384x384.png",
         "https://Xel4ek.github.io/n-puzzle/assets/icons/apple-touch-icon.png",
-        "https://Xel4ek.github.io/n-puzzle/assets/icons/browserconfig.xml",
         "https://Xel4ek.github.io/n-puzzle/assets/icons/favicon-16x16.png",
         "https://Xel4ek.github.io/n-puzzle/assets/icons/favicon-32x32.png",
         "https://Xel4ek.github.io/n-puzzle/assets/icons/favicon.ico",
+        "https://Xel4ek.github.io/n-puzzle/assets/icons/icon-512x512.png",
         "https://Xel4ek.github.io/n-puzzle/assets/icons/mstile-150x150.png",
         "https://Xel4ek.github.io/n-puzzle/assets/icons/safari-pinned-tab.svg",
         "https://Xel4ek.github.io/n-puzzle/assets/icons/site.webmanifest"
@@ -50,17 +50,17 @@
     "https://Xel4ek.github.io/n-puzzle/assets/icons/android-chrome-192x192.png": "01b9e5422c574cbc59f9bbf3fc1fb3299eae292e",
     "https://Xel4ek.github.io/n-puzzle/assets/icons/android-chrome-384x384.png": "51bc3b21475f1cdc25bdd8985ff612552a5c9305",
     "https://Xel4ek.github.io/n-puzzle/assets/icons/apple-touch-icon.png": "bccc24770d890110204401a86c8499bb0029c149",
-    "https://Xel4ek.github.io/n-puzzle/assets/icons/browserconfig.xml": "974aea18bda5a95802c06b80126ab1d96d91d708",
     "https://Xel4ek.github.io/n-puzzle/assets/icons/favicon-16x16.png": "8531f11d919fff2d23c394100896cb62beca014f",
     "https://Xel4ek.github.io/n-puzzle/assets/icons/favicon-32x32.png": "97c8e25cd74045370e607616d810c617c2b6c14e",
     "https://Xel4ek.github.io/n-puzzle/assets/icons/favicon.ico": "540be2f8d2ae02c4451b7cd18dc7f6ad7d383e97",
+    "https://Xel4ek.github.io/n-puzzle/assets/icons/icon-512x512.png": "7e5048dff9226946c19afb3aa57b24a9a637b89c",
     "https://Xel4ek.github.io/n-puzzle/assets/icons/mstile-150x150.png": "f36364981df3b6e4715fc7cfd9fbba2dfb3183d2",
     "https://Xel4ek.github.io/n-puzzle/assets/icons/safari-pinned-tab.svg": "dbef8419abf9493bf53646f399ae4631595aad62",
     "https://Xel4ek.github.io/n-puzzle/assets/icons/site.webmanifest": "e1723dd9813b4f2df2da91f834ff644578649cc1",
     "https://Xel4ek.github.io/n-puzzle/favicon.ico": "a2a4b2a64976384ad80fc837f2780b8468b3fdc3",
-    "https://Xel4ek.github.io/n-puzzle/index.html": "1bee55eada69caf6ff8123d5b5e1fe5af3d64955",
+    "https://Xel4ek.github.io/n-puzzle/index.html": "d9b7398f504d0ab0b4f74d7d4c69681c6f628db7",
     "https://Xel4ek.github.io/n-puzzle/main.3dcc3cc8a397b94e0144.js": "eb07daedab82968e1761868af6ae2f0d24a45a92",
-    "https://Xel4ek.github.io/n-puzzle/manifest.webmanifest": "69861e8e531d17fe5b745efce71d53e4615e989f",
+    "https://Xel4ek.github.io/n-puzzle/manifest.webmanifest": "b9db208ba21557d1e39bc35793f1cdce8bf412ad",
     "https://Xel4ek.github.io/n-puzzle/polyfills.8c151b8375e767ff858f.js": "763cd3b34dfa4600ebb9d9588ec7116988e98920",
     "https://Xel4ek.github.io/n-puzzle/runtime.46b315a8f9d7d7c3abc5.js": "e61285fadcd1f1bd55ffb5edb8ca83b27173c7d1",
     "https://Xel4ek.github.io/n-puzzle/styles.11fb861ed3a215ee3bb8.css": "6a3d148815787c724be152d9be9cb0fa01f3da24"

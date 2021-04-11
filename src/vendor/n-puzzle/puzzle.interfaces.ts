@@ -14,12 +14,20 @@ export interface AverageResults {
   totalNodes: number;
   len: number;
 }
-export interface Strategy<T> {
 
+export interface Strategy<T> {
   goalH: number;
-  h([currentRow, currentCol]: number[], [targetRow, targetCol]: number[]): number;
+
+  // h(
+  //   [currentRow, currentCol]: number[],
+  //   [targetRow, targetCol]: number[]
+  // ): number;
+
+  h(current: T, target: T): number;
 
   g(source: T, current: T): number;
 
   successors(snapshot: T, secondPhase: boolean): T[];
+
+  bound(current: T): number | undefined;
 }

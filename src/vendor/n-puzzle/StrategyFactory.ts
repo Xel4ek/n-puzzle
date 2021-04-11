@@ -13,22 +13,7 @@ export class StrategyFactory<T extends NPuzzle> {
   }
 
   h(current: T, target: T): number {
-    const size = target.size;
-    if (!(target instanceof MappedNPuzzle)) {
-      throw new Error('target must implement MappedNPuzzle class');
-    }
-    return current.instance.reduce((acc, cur, index) => {
-      const point = target.mapInstance.get(cur);
-      if (point) {
-        const { row, col } = point;
-        return (
-          acc +
-          this.strategy.h([Math.trunc(index / size), index % size], [row, col])
-        );
-      } else {
-        throw new Error('no Map');
-      }
-    }, 0);
+    return this.strategy.h(current, target);
   }
 
   isGoal(current: T, target: T): boolean {
@@ -39,7 +24,11 @@ export class StrategyFactory<T extends NPuzzle> {
     return this.strategy.successors(snapshot, this.secondPhase);
   }
 
-  hybrid({ instance }: T): boolean {
+  hybrid({instance}: T): boolean {
     return instance[0] === 1 && instance[1] === 2 && instance[2] === 3 && instance[3] === 4;
+  }
+
+  bound(current: T): number {
+    return this.strategy.bound(current) ?? Number.MAX_VALUE;
   }
 }

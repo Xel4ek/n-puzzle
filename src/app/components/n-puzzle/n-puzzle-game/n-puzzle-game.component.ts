@@ -9,7 +9,9 @@ import {
   Output,
 } from '@angular/core';
 import { NPuzzleGenerator } from '@vendor/n-puzzle/NPuzzleGenerator';
-import { NPuzzle } from '@vendor/n-puzzle/NPuzzle';
+import { MappedNPuzzle, NPuzzle } from '@vendor/n-puzzle/NPuzzle';
+import { ALGORITHMS_MAP } from '@components/n-puzzle/n-puzzle.component';
+
 @Component({
   selector: 'app-n-puzzle-game[size]',
   templateUrl: './n-puzzle-game.component.html',
@@ -17,13 +19,17 @@ import { NPuzzle } from '@vendor/n-puzzle/NPuzzle';
 })
 export class NPuzzleGameComponent implements OnInit, OnChanges {
   @Input() size!: number;
-  private puzzle?: NPuzzle;
+  puzzle?: NPuzzle;
   game?: number[];
+  gamePuzzle?: NPuzzle;
+  targetPuzzle?: MappedNPuzzle;
   steps = 0;
   target?: string;
   solved = false;
+  algorithmsMap = Object.entries(ALGORITHMS_MAP);
   @Output() solveIt = new EventEmitter<NPuzzle>();
-  constructor(private readonly elementRef: ElementRef) {}
+  constructor(private readonly elementRef: ElementRef) {
+  }
 
   ngOnInit(): void {}
   solveItPlz(): void {
@@ -41,7 +47,10 @@ export class NPuzzleGameComponent implements OnInit, OnChanges {
     this.solved = false;
     this.puzzle = new NPuzzleGenerator(this.size).generate();
     this.game = [...this.puzzle.instance];
-    this.target = [...[...this.game].sort((a, b) => a - b).slice(1), 0].join(
+    this.gamePuzzle = new NPuzzle(this.size, this.game);
+    this.targetPuzzle = new MappedNPuzzle(this.size, [...[...this.game].sort((a, b) => a - b).slice(1), 0]);
+
+    this.target = this.targetPuzzle.instance.join(
       ' '
     );
   }

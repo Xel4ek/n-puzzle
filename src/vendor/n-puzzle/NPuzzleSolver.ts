@@ -83,15 +83,18 @@ export class NPuzzleSolver<T extends HeapInterface<P>, P extends NPuzzle> {
       holder.add(entity.instance.join(' '));
       for (const child of strategy.successors(entity)) {
         if (!holder.has(child.instance.join(' '))) {
-          this.implementsNodeCount++;
           child.isTarget = strategy.isGoal(child, this.targetInstance);
           if (child.isTarget || strategy.hybrid(child)) {
             return child;
           }
+          const priority = child.history.length + strategy.h(child, this.targetInstance);
+          if (priority <= strategy.bound(child)) {
+          this.implementsNodeCount++;
           this.priorityQueue.insert(
             child.history.length + strategy.h(child, this.targetInstance),
             child
           );
+          }
         }
       }
     }

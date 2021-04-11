@@ -8,7 +8,7 @@
       <span *ngFor="let letter of ('You&nbsp;won&nbsp;in&nbsp;' + steps + '&nbsp;moves!').split('')">{{letter}}</span>
   </div>
   <ng-template #score>
-    <div class="score">
+    <div class="score" *ngIf="steps">
       {{steps}} move makes
     </div>
   </ng-template>
@@ -21,6 +21,12 @@
     </div>
     <div class="btn shine" (click)="solveItPlz()">
       <i class="fas fa-biohazard"></i> Solve it plz!
+    </div>
+  </div>
+  <div class="info" *ngIf="targetPuzzle && gamePuzzle">
+    <div *ngFor="let algorithm of algorithmsMap">
+      {{algorithm[0]}}
+      {{algorithm[1].h(gamePuzzle, targetPuzzle)}}
     </div>
   </div>
 </div>

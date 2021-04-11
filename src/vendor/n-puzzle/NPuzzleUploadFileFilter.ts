@@ -48,8 +48,8 @@ export class NPuzzleUploadFileFilter {
             }
           }
           if (
-            instance.length === size ** 2 &&
-            [...Array(size ** 2).keys()].every((digit) =>
+            instance.length === size * size &&
+            [...Array(size * size).keys()].every((digit) =>
               instance.includes(digit)
             )
           ) {

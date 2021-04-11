@@ -1,8 +1,39 @@
 import { MappedNPuzzle, NPuzzle } from './NPuzzle';
 import { Strategy } from './puzzle.interfaces';
 
-const taxicabH = ([currentRow, currentCol]: number[], [targetRow, targetCol]: number[]): number => {
-  return Math.abs(currentRow - targetRow) + Math.abs(currentCol - targetCol);
+const wrongPlace = (current: NPuzzle, target: NPuzzle): number => {
+  if (!(target instanceof MappedNPuzzle)) {
+    throw new Error('target must implement MappedNPuzzle class');
+  }
+  return current.instance.reduce((acc, cur, currentIndex) => {
+    const point = target.mapInstance.get(cur);
+    if (point) {
+      const { index: targetIndex } = point;
+      return acc + (targetIndex === currentIndex ? 0 : 1);
+    } else {
+      throw new Error('no Map');
+    }
+  }, 0);
+};
+
+const taxicabH = (current: NPuzzle, target: NPuzzle): number => {
+  const size = target.size;
+  if (!(target instanceof MappedNPuzzle)) {
+    throw new Error('target must implement MappedNPuzzle class');
+  }
+  return current.instance.reduce((acc, cur, index) => {
+    const point = target.mapInstance.get(cur);
+    if (point) {
+      const { row, col } = point;
+      return (
+        acc +
+        Math.abs(Math.trunc(index / size) - row) +
+        Math.abs((index % size) - col)
+      );
+    } else {
+      throw new Error('no Map');
+    }
+  }, 0);
 };
 
 const generate = (
@@ -41,10 +72,7 @@ const generate = (
     return '';
   })();
   const instance = [...parent.instance];
-  [instance[newIndex], instance[index]] = [
-    instance[index],
-    instance[newIndex],
-  ];
+  [instance[newIndex], instance[index]] = [instance[index], instance[newIndex]];
   return new NPuzzle(size, instance, parent.history + action);
 };
 const produce = (snapshot: NPuzzle, secondPhase = false): NPuzzle[] => {
@@ -68,10 +96,29 @@ const produce = (snapshot: NPuzzle, secondPhase = false): NPuzzle[] => {
   }
   return queue;
 };
-export const MANHATTAN: Strategy<NPuzzle> = {
-  h: taxicabH,
+
+const godDigits = new Map<number, number>([
+  [3, 31],
+  [4, 80],
+  [5, 208],
+]);
+
+const BASE_STRATEGY: Omit<Strategy<NPuzzle>, 'h'> = {
   g: (source: MappedNPuzzle, current: NPuzzle) => 1,
-  successors: (snapshot: NPuzzle, secondPhase) => produce(snapshot, secondPhase),
-  goalH: 0
+  successors: (snapshot: NPuzzle, secondPhase) =>
+    produce(snapshot, secondPhase),
+  goalH: 0,
+  bound(current: NPuzzle): number | undefined {
+    return godDigits.get(current.size);
+  },
 };
 
+export const MANHATTAN: Strategy<NPuzzle> = {
+  ...BASE_STRATEGY,
+  h: taxicabH,
+};
+
+export const WRONG_PLACE: Strategy<NPuzzle> = {
+  ...BASE_STRATEGY,
+  h: wrongPlace,
+};

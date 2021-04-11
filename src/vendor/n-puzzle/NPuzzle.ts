@@ -20,17 +20,18 @@ export class NPuzzle implements NPuzzleInterface {
 }
 
 export class MappedNPuzzle extends NPuzzle {
-  mapInstance: Map<number, { row: number; col: number }>;
+  mapInstance: Map<number, { row: number; col: number, index: number }>;
 
   constructor(size: number, instance: number[]) {
     super(size, instance);
 
-    this.mapInstance = new Map<number, { row: number; col: number }>();
+    this.mapInstance = new Map<number, { row: number; col: number, index: number }>();
 
     instance.map((entry, index) => {
       this.mapInstance.set(entry, {
         col: index % this.size,
         row: Math.trunc(index / this.size),
+        index
       });
     });
   }

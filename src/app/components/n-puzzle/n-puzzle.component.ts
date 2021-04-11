@@ -20,14 +20,15 @@ import {
 import { NPuzzleGenerator } from '@vendor/n-puzzle/NPuzzleGenerator';
 import { LeftHeap } from '@vendor/heap/left-heap/LeftHeap';
 import { DataHolderService } from '@services/data-holder/data-holder.service';
-import { MANHATTAN } from '@vendor/n-puzzle/strategy';
+import { MANHATTAN, WRONG_PLACE } from '@vendor/n-puzzle/strategy';
 import { Strategy } from '@vendor/n-puzzle/puzzle.interfaces';
 import { Heap } from '@vendor/heap/binary-heap/heap';
 import { NPuzzleUploadFileFilter } from '@vendor/n-puzzle/NPuzzleUploadFileFilter';
 
-type AlgorithmList = 'manhattan';
-const algorithmMAp: { [key in AlgorithmList]: Strategy<NPuzzle> } = {
+type AlgorithmList = 'manhattan' | 'wrongPlace';
+export const ALGORITHMS_MAP: { [key in AlgorithmList]: Strategy<NPuzzle> } = {
   manhattan: MANHATTAN,
+  wrongPlace: WRONG_PLACE
 };
 type HeapList = 'left' | 'binary';
 
@@ -108,7 +109,7 @@ export class NPuzzleComponent implements OnInit, OnDestroy {
     if (this.heap === 'left') {
       solver = new NPuzzleSolver<LeftHeap<NPuzzle>, NPuzzle>(
         LeftHeap,
-        algorithmMAp[this.algorithm],
+        ALGORITHMS_MAP[this.algorithm],
         sourceInstance,
         targetInstance
       );
@@ -116,7 +117,7 @@ export class NPuzzleComponent implements OnInit, OnDestroy {
     if (this.heap === 'binary') {
       solver = new NPuzzleSolver<Heap<NPuzzle>, NPuzzle>(
         Heap,
-        algorithmMAp[this.algorithm],
+        ALGORITHMS_MAP[this.algorithm],
         sourceInstance,
         targetInstance
       );

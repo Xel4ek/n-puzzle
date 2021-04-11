@@ -10,6 +10,7 @@
     <mat-label>Select predict style</mat-label>
     <mat-select [(value)]="algorithm">
       <mat-option value="manhattan">Manhattan</mat-option>
+      <mat-option value="wrongPlace">Wrong Place</mat-option>
     </mat-select>
   </mat-form-field>
   <mat-form-field appearance="fill">
@@ -39,7 +40,7 @@
 
 <mat-expansion-panel *ngFor="let result of results.reverse(); index as i">
   <mat-expansion-panel-header>
-    <mat-panel-title [ngClass]="result.solvable ? 'green' : 'red'"> Calculation [ {{ results.length - i }}]
+    <mat-panel-title [ngClass]="result.solvable ? 'green' : 'red'"> Calculation [ {{ results.length - i }} ]
     </mat-panel-title>
     <mat-panel-description class="title__time">
       Puzzle: {{result.size}}x{{result.size}}

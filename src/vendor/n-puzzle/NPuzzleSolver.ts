@@ -14,6 +14,7 @@ export interface NPuzzleSolverReport {
   done: number;
   timeUsed: number; // milliseconds
   closedNodes: number;
+  size: number;
 }
 
 export class NPuzzleSolver<T extends HeapInterface<P>, P extends NPuzzle> {
@@ -46,6 +47,7 @@ export class NPuzzleSolver<T extends HeapInterface<P>, P extends NPuzzle> {
       solvable: this.solvable,
       done: Date.now(),
       timeUsed: performance.now() - this.startTime,
+      size: this.sourceInstance.size,
     };
   }
 
@@ -126,15 +128,6 @@ export class NPuzzleSolver<T extends HeapInterface<P>, P extends NPuzzle> {
           );
         }
       }
-    }
-  }
-
-  private logger(step = 1e5): void {
-    if (this.closedNodes % step === 0) {
-      console.group('[Info] : ', this.closedNodes / 1e6, 'M');
-      console.log('queue: ', this.priorityQueue.size / 1e6, 'M');
-      console.log('open: ', this.implementsNodeCount / 1e6, 'M');
-      console.groupEnd();
     }
   }
 }

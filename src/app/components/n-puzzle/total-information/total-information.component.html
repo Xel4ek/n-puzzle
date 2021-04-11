@@ -1,14 +1,22 @@
-<p>This is the primary content of the panel.</p>
-<ng-container *ngIf="data$ | async as data;">
-  <ng-container *ngIf="data?.len; else noTest">
-    <p>Average time: {{data.totalTime/data.len}}</p>
-    <p>Average steps: {{data.totalRequiredSteps/data.len}}</p>
-    <p>Average selected states: {{data.totalStates/data.len}}</p>
-    <p>Average implemented nodes: {{data.totalNodes/data.len}}</p>
-    <p>Solvable puzzles: {{data.solvableCount}}</p>
-    <p>Unsolvable puzzles: {{data.unsolvableCount}}</p>
-  </ng-container>
-  <ng-template #noTest>
-    <p>Please, run some tests</p>
-  </ng-template>
-</ng-container>
+<div class="total" *ngIf="data$ | async as data">
+  <div class="card__info" *ngFor="let info of data">
+    <div class="info__row">
+      Size : <span class="info__row-data">{{info.size}}</span>
+    </div>
+    <div class="info__row">
+      Uploaded | Solved: <span class="info__row-data">{{info.len}} / {{info.solvableCount | number: "1.0-2"}}</span>
+    </div>
+    <div class="info__row">
+      Average Required Steps : <span class="info__row-data">{{info.totalRequiredSteps / info.len | number: "1.0-2"}}</span> steps
+    </div>
+     <div class="info__row">
+       Average Time : <span class="info__row-data">{{info.totalTime / info.len | number: "1.0-2"}}</span> milliseconds
+    </div>
+     <div class="info__row">
+       Average States : <span class="info__row-data">{{info.totalStates / info.len | number: "1.0-0"}}</span> states
+    </div>
+     <div class="info__row">
+       Average Nodes : <span class="info__row-data">{{info.totalNodes / info.len | number: "1.0-0"}}</span> nodes
+    </div>
+  </div>
+</div>

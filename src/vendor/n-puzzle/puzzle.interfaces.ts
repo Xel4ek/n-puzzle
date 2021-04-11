@@ -5,13 +5,15 @@ export interface NPuzzleInterface {
   isTarget: boolean;
 }
 
-export interface NodeInterface<T> {
-  score: number;
-  snapshot: T;
-  parent?: NodeInterface<T>;
-  isTarget: boolean;
+export interface AverageResults {
+  size: number;
+  totalRequiredSteps: number;
+  solvableCount: number;
+  totalTime: number;
+  totalStates: number;
+  totalNodes: number;
+  len: number;
 }
-
 export interface Strategy<T> {
 
   goalH: number;

@@ -1,0 +1,21 @@
+.card {
+  &__row {
+    display: flex;
+  }
+
+  &__info {
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
+    font-style: italic;
+    font-weight: 300;
+
+    .info__row-data {
+      font-weight: 500;
+    }
+
+    .info__row {
+      padding: 0.5rem 1rem;
+    }
+  }
+}

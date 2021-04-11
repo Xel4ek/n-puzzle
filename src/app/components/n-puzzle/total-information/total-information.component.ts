@@ -1,8 +1,7 @@
-import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
-import { NPuzzleSolverReport } from '../../../../vendor/n-puzzle/NPuzzleSolver';
-import { NPuzzle } from '../../../../vendor/n-puzzle/NPuzzle';
-import { DataHolderService } from '../../../services/data-holder/data-holder.service';
+import { Component, } from '@angular/core';
+import { DataHolderService } from '@services/data-holder/data-holder.service';
 import { Observable } from 'rxjs';
+import { AverageResults } from '@vendor/n-puzzle/puzzle.interfaces';
 
 @Component({
   selector: 'app-total-information',
@@ -10,9 +9,9 @@ import { Observable } from 'rxjs';
   styleUrls: ['./total-information.component.scss'],
 })
 export class TotalInformationComponent {
-  data$: Observable<any>;
+  data$: Observable<AverageResults[]>;
+
   constructor(private readonly dataHolder: DataHolderService) {
     this.data$ = dataHolder.getAverageData();
   }
-
 }

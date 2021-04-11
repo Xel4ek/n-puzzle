@@ -4,7 +4,7 @@
   "theme_color": "#800080",
   "background_color": "#ffffff",
   "display": "standalone",
-  "scope": "https://xel4ek.github.io/n-puzzle/",
+  "scope": "./",
   "start_url": "/index.html",
   "icons": [
     {

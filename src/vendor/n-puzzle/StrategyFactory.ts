@@ -1,5 +1,5 @@
 import { Strategy } from './puzzle.interfaces';
-import { MappedNPuzzle, NPuzzle } from './NPuzzle';
+import { NPuzzle } from './NPuzzle';
 
 export class StrategyFactory<T extends NPuzzle> {
   private readonly strategy: Strategy<T>;
@@ -13,7 +13,10 @@ export class StrategyFactory<T extends NPuzzle> {
   }
 
   h(current: T, target: T): number {
-    return this.strategy.h(current, target);
+    const expansion = this.strategy.expansion.reduce((acc, curFn) => {
+      return acc + curFn(current, target);
+    }, 0);
+    return this.strategy.h(current, target) + expansion;
   }
 
   isGoal(current: T, target: T): boolean {

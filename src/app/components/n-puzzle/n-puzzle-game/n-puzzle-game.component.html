@@ -24,9 +24,19 @@
     </div>
   </div>
   <div class="info" *ngIf="targetPuzzle && gamePuzzle">
-    <div *ngFor="let algorithm of algorithmsMap">
-      {{algorithm[0]}}
-      {{algorithm[1].h(gamePuzzle, targetPuzzle)}}
+    <div class="info__block">
+      <div class="title">Main Heuristic contribution</div>
+      <div *ngFor="let algorithm of algorithmsMap" class="info__content">
+      <div>{{algorithm[0] | prettyName}}</div>
+        <div>{{algorithm[1].h(gamePuzzle, targetPuzzle)}}</div>
+    </div>
+    </div>
+    <div class="info__block">
+    <div class="title">Expansion contribution</div>
+    <div *ngFor="let expansion of expansionsMap" class="info__content">
+      <div>{{expansion[0] | prettyName}}</div>
+      <div>{{expansion[1](gamePuzzle, targetPuzzle)}}</div>
+    </div>
     </div>
   </div>
 </div>

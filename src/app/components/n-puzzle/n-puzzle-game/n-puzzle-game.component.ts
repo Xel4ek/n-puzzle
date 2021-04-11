@@ -10,7 +10,7 @@ import {
 } from '@angular/core';
 import { NPuzzleGenerator } from '@vendor/n-puzzle/NPuzzleGenerator';
 import { MappedNPuzzle, NPuzzle } from '@vendor/n-puzzle/NPuzzle';
-import { ALGORITHMS_MAP } from '@components/n-puzzle/n-puzzle.component';
+import { ALGORITHMS_MAP, EXPLANATIONS_MAP } from '@components/n-puzzle/n-puzzle.component';
 
 @Component({
   selector: 'app-n-puzzle-game[size]',
@@ -27,6 +27,7 @@ export class NPuzzleGameComponent implements OnInit, OnChanges {
   target?: string;
   solved = false;
   algorithmsMap = Object.entries(ALGORITHMS_MAP);
+  expansionsMap = Object.entries(EXPLANATIONS_MAP);
   @Output() solveIt = new EventEmitter<NPuzzle>();
   constructor(private readonly elementRef: ElementRef) {
   }

@@ -23,6 +23,27 @@
         }
       }
     }
+    .info {
+      display: flex;
+      gap: 1rem;
+      .title {
+        font-weight: bold;
+        padding-bottom: .5rem;
+      }
+      &__content {
+        display: flex;
+        :first-child {
+          flex: 1 1 auto;
+        }
+        :nth-child(n) {
+          padding-bottom: .5rem;
+        }
+      }
+      &__block {
+        display: flex;
+        flex-direction: column;
+      }
+    }
   }
 }
 

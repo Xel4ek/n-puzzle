@@ -10,6 +10,8 @@ import { TotalInformationComponent } from './total-information/total-information
 import { MatSelectModule } from '@angular/material/select';
 import { NPuzzleGridComponent } from './n-puzzle-grid/n-puzzle-grid.component';
 import { NPuzzleGameComponent } from '@components/n-puzzle/n-puzzle-game/n-puzzle-game.component';
+import { ReactiveFormsModule } from '@angular/forms';
+import { PrettyNamePipe } from '../../pipes/pretty-name.pipe';
 
 @NgModule({
   declarations: [
@@ -19,12 +21,14 @@ import { NPuzzleGameComponent } from '@components/n-puzzle/n-puzzle-game/n-puzzl
     TotalInformationComponent,
     NPuzzleGridComponent,
     NPuzzleGameComponent,
+    PrettyNamePipe
   ],
   imports: [
     CommonModule,
     NPuzzleRoutingModule,
     MatExpansionModule,
     MatSelectModule,
+    ReactiveFormsModule,
   ],
   exports: [MatExpansionModule],
 })

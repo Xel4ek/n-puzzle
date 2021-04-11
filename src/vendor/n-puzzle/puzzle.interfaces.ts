@@ -15,8 +15,11 @@ export interface AverageResults {
   len: number;
 }
 
+export type Expansion<T> = (current: T, target: T) => number;
+
 export interface Strategy<T> {
   goalH: number;
+  expansion: Expansion<T>[];
 
   // h(
   //   [currentRow, currentCol]: number[],

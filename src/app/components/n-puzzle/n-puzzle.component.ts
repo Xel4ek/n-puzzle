@@ -1,36 +1,34 @@
 import { Component, NgZone, OnDestroy, OnInit } from '@angular/core';
-import { fromEvent, Observable, partition, Subscription } from 'rxjs';
-import {
-  filter,
-  finalize,
-  first,
-  map,
-  mergeMap,
-  switchMap,
-  tap,
-  toArray,
-} from 'rxjs/operators';
+import { fromEvent, Subscription } from 'rxjs';
+import { filter, first, map, mergeMap, toArray } from 'rxjs/operators';
 import { MappedNPuzzle, NPuzzle } from '@vendor/n-puzzle/NPuzzle';
 
-import {
-  NPuzzleSolver,
-  NPuzzleSolverReport,
-} from '@vendor/n-puzzle/NPuzzleSolver';
-
-import { NPuzzleGenerator } from '@vendor/n-puzzle/NPuzzleGenerator';
+import { NPuzzleSolver, NPuzzleSolverReport, } from '@vendor/n-puzzle/NPuzzleSolver';
 import { LeftHeap } from '@vendor/heap/left-heap/LeftHeap';
 import { DataHolderService } from '@services/data-holder/data-holder.service';
-import { MANHATTAN, WRONG_PLACE } from '@vendor/n-puzzle/strategy';
-import { Strategy } from '@vendor/n-puzzle/puzzle.interfaces';
+import { CORNER_TILES, LAST_MOVIE, LINEAR_CONFLICT, MANHATTAN, WRONG_PLACE } from '@vendor/n-puzzle/strategy';
+import { Expansion, Strategy } from '@vendor/n-puzzle/puzzle.interfaces';
 import { Heap } from '@vendor/heap/binary-heap/heap';
 import { NPuzzleUploadFileFilter } from '@vendor/n-puzzle/NPuzzleUploadFileFilter';
+import { FormControl } from '@angular/forms';
 
 type AlgorithmList = 'manhattan' | 'wrongPlace';
-export const ALGORITHMS_MAP: { [key in AlgorithmList]: Strategy<NPuzzle> } = {
+export const ALGORITHMS_MAP: {
+  [key in AlgorithmList]: Omit<Strategy<NPuzzle>, 'expansion'>;
+} = {
   manhattan: MANHATTAN,
-  wrongPlace: WRONG_PLACE
+  wrongPlace: WRONG_PLACE,
 };
 type HeapList = 'left' | 'binary';
+
+type ExpansionList = 'linearConflict' | 'lastMovie' | 'cornerTiles';
+export const EXPLANATIONS_MAP: {
+  [key in ExpansionList]: Expansion<NPuzzle | MappedNPuzzle>;
+} = {
+  linearConflict: LINEAR_CONFLICT,
+  lastMovie: LAST_MOVIE,
+  cornerTiles: CORNER_TILES,
+};
 
 @Component({
   selector: 'app-n-puzzle',
@@ -42,14 +40,24 @@ export class NPuzzleComponent implements OnInit, OnDestroy {
   calculated = false;
   size = 3;
   algorithm: AlgorithmList = 'manhattan';
+  expansionsKey: { key: ExpansionList, title: string }[] = [
+    {key: 'linearConflict', title: 'Linear Conflict'},
+    {key: 'lastMovie', title: 'Last Movie'},
+    {key: 'cornerTiles', title: 'Corner Tiles'},
+  ];
   heap: HeapList = 'left';
   results: NPuzzleSolverReport[] = [];
+  // expansions: Expansion<NPuzzle>[] = [];
+  expansions = new FormControl();
+
   constructor(
     private readonly zone: NgZone,
     private readonly dataHolder: DataHolderService
-  ) {}
+  ) {
+  }
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+  }
 
   uploadFile(fileList: FileList | null): void {
     if (!fileList || !fileList.length) {
@@ -58,32 +66,34 @@ export class NPuzzleComponent implements OnInit, OnDestroy {
     const file = fileList[0];
     const reader = new FileReader();
     reader.readAsArrayBuffer(file);
-    const sub: Subscription = fromEvent(reader, 'load').pipe(
-      first(),
-      map((result) => {
-        let binary = '';
-        const bytes = new Uint8Array((result?.target as any).result);
-        const length = bytes.byteLength;
-        for (let i = 0; i < length; i++) {
-          binary += String.fromCharCode(bytes[i]);
-        }
-        return binary;
-      }),
-      mergeMap((data) => data.split('\n')),
-      filter((str) => !str.startsWith('#') && !!str.trim().length),
-      toArray(),
-      mergeMap((value) => {
-        const uploaded = new NPuzzleUploadFileFilter(value).getPuzzles();
-        this.uploaded += uploaded.length;
-        return uploaded;
-      }),
-      map((puzzle) => this.solver(puzzle)),
-    ).subscribe({
-      complete: () => {
-        console.log('Done !');
-        sub.unsubscribe();
-      },
-    });
+    const sub: Subscription = fromEvent(reader, 'load')
+      .pipe(
+        first(),
+        map((result) => {
+          let binary = '';
+          const bytes = new Uint8Array((result?.target as any).result);
+          const length = bytes.byteLength;
+          for (let i = 0; i < length; i++) {
+            binary += String.fromCharCode(bytes[i]);
+          }
+          return binary;
+        }),
+        mergeMap((data) => data.split('\n')),
+        filter((str) => !str.startsWith('#') && !!str.trim().length),
+        toArray(),
+        mergeMap((value) => {
+          const uploaded = new NPuzzleUploadFileFilter(value).getPuzzles();
+          this.uploaded += uploaded.length;
+          return uploaded;
+        }),
+        map((puzzle) => this.solver(puzzle))
+      )
+      .subscribe({
+        complete: () => {
+          console.log('Done !');
+          sub.unsubscribe();
+        },
+      });
   }
 
   clear(): void {
@@ -93,6 +103,9 @@ export class NPuzzleComponent implements OnInit, OnDestroy {
 
   solveFromGame(puzzle: NPuzzle): void {
     this.solver(puzzle);
+  }
+
+  ngOnDestroy(): void {
   }
 
   private solver(puzzle: NPuzzle): void {
@@ -109,7 +122,12 @@ export class NPuzzleComponent implements OnInit, OnDestroy {
     if (this.heap === 'left') {
       solver = new NPuzzleSolver<LeftHeap<NPuzzle>, NPuzzle>(
         LeftHeap,
-        ALGORITHMS_MAP[this.algorithm],
+        {
+          ...ALGORITHMS_MAP[this.algorithm],
+          expansion: this.expansions.value.map(
+            (expansion: ExpansionList) => EXPLANATIONS_MAP[expansion]
+          ),
+        },
         sourceInstance,
         targetInstance
       );
@@ -117,7 +135,12 @@ export class NPuzzleComponent implements OnInit, OnDestroy {
     if (this.heap === 'binary') {
       solver = new NPuzzleSolver<Heap<NPuzzle>, NPuzzle>(
         Heap,
-        ALGORITHMS_MAP[this.algorithm],
+        {
+          ...ALGORITHMS_MAP[this.algorithm],
+          expansion: this.expansions.value.map(
+            (expansion: ExpansionList) => EXPLANATIONS_MAP[expansion]
+          ),
+        },
         sourceInstance,
         targetInstance
       );
@@ -128,8 +151,5 @@ export class NPuzzleComponent implements OnInit, OnDestroy {
     this.results.push(result);
     this.dataHolder.updateResult(this.results);
     this.calculated = false;
-  }
-
-  ngOnDestroy(): void {
   }
 }

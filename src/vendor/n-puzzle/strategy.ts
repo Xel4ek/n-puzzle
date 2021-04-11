@@ -1,5 +1,5 @@
 import { MappedNPuzzle, NPuzzle } from './NPuzzle';
-import { Strategy } from './puzzle.interfaces';
+import { Expansion, Strategy } from './puzzle.interfaces';
 
 const wrongPlace = (current: NPuzzle, target: NPuzzle): number => {
   if (!(target instanceof MappedNPuzzle)) {
@@ -103,7 +103,7 @@ const godDigits = new Map<number, number>([
   [5, 208],
 ]);
 
-const BASE_STRATEGY: Omit<Strategy<NPuzzle>, 'h'> = {
+const BASE_STRATEGY: Omit<Strategy<NPuzzle>, 'h' | 'expansion'> = {
   g: (source: MappedNPuzzle, current: NPuzzle) => 1,
   successors: (snapshot: NPuzzle, secondPhase) =>
     produce(snapshot, secondPhase),
@@ -113,12 +113,24 @@ const BASE_STRATEGY: Omit<Strategy<NPuzzle>, 'h'> = {
   },
 };
 
-export const MANHATTAN: Strategy<NPuzzle> = {
+export const MANHATTAN: Omit<Strategy<NPuzzle>, 'expansion'>  = {
   ...BASE_STRATEGY,
   h: taxicabH,
 };
 
-export const WRONG_PLACE: Strategy<NPuzzle> = {
+export const WRONG_PLACE: Omit<Strategy<NPuzzle>, 'expansion'> = {
   ...BASE_STRATEGY,
   h: wrongPlace,
 };
+const check = (target: NPuzzle | MappedNPuzzle): void => {
+  if (!(target instanceof MappedNPuzzle)) {
+    throw new Error('target must implement MappedNPuzzle class');
+  }
+};
+
+export const LINEAR_CONFLICT: Expansion<NPuzzle | MappedNPuzzle> = (current, target) => {
+  check(target);
+  return 0;
+};
+export const LAST_MOVIE: Expansion<NPuzzle | MappedNPuzzle> = (current, target) => 0;
+export const CORNER_TILES: Expansion<NPuzzle | MappedNPuzzle> = (current, target) => 0;

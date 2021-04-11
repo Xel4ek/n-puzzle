@@ -10,9 +10,9 @@
     <mat-label>Select predict style</mat-label>
     <mat-select [(value)]="algorithm">
       <mat-option value="manhattan">Manhattan</mat-option>
-      <mat-option value="wrongPlace" [disabled]="size > 3"
-        >Wrong Place</mat-option
-      >
+      <mat-option [disabled]="size > 3" value="wrongPlace"
+        >Wrong Place
+      </mat-option>
     </mat-select>
   </mat-form-field>
   <mat-form-field appearance="fill">
@@ -48,16 +48,16 @@
   </label>
   <div (click)="clear()" class="btn shine">Clear</div>
 </div>
-<mat-expansion-panel *ngIf="results.length">
-  <mat-expansion-panel-header>
-    <mat-panel-title>
-      Summary for {{ results.length }} calculations</mat-panel-title
-    >
-    <mat-panel-description> Total information</mat-panel-description>
-  </mat-expansion-panel-header>
-  <app-total-information></app-total-information>
-</mat-expansion-panel>
 <mat-accordion multi>
+  <mat-expansion-panel *ngIf="results.length">
+    <mat-expansion-panel-header>
+      <mat-panel-title>
+        Summary for {{ results.length }} calculations
+      </mat-panel-title>
+      <mat-panel-description> Total information</mat-panel-description>
+    </mat-expansion-panel-header>
+    <app-total-information></app-total-information>
+  </mat-expansion-panel>
   <mat-expansion-panel *ngFor="let result of results.reverse(); index as i">
     <mat-expansion-panel-header>
       <mat-panel-title [ngClass]="result.solvable ? 'green' : 'red'">

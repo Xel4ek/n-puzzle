@@ -1,6 +1,6 @@
 {
   "configVersion": 1,
-  "timestamp": 1618157983165,
+  "timestamp": 1618158479562,
   "index": "https://Xel4ek.github.io/n-puzzle/index.html",
   "assetGroups": [
     {
@@ -60,7 +60,7 @@
     "https://Xel4ek.github.io/n-puzzle/favicon.ico": "a2a4b2a64976384ad80fc837f2780b8468b3fdc3",
     "https://Xel4ek.github.io/n-puzzle/index.html": "d9b7398f504d0ab0b4f74d7d4c69681c6f628db7",
     "https://Xel4ek.github.io/n-puzzle/main.3dcc3cc8a397b94e0144.js": "eb07daedab82968e1761868af6ae2f0d24a45a92",
-    "https://Xel4ek.github.io/n-puzzle/manifest.webmanifest": "b9db208ba21557d1e39bc35793f1cdce8bf412ad",
+    "https://Xel4ek.github.io/n-puzzle/manifest.webmanifest": "0d74f94725233099ec5bb37d434a02c86a2473b8",
     "https://Xel4ek.github.io/n-puzzle/polyfills.8c151b8375e767ff858f.js": "763cd3b34dfa4600ebb9d9588ec7116988e98920",
     "https://Xel4ek.github.io/n-puzzle/runtime.46b315a8f9d7d7c3abc5.js": "e61285fadcd1f1bd55ffb5edb8ca83b27173c7d1",
     "https://Xel4ek.github.io/n-puzzle/styles.11fb861ed3a215ee3bb8.css": "6a3d148815787c724be152d9be9cb0fa01f3da24"

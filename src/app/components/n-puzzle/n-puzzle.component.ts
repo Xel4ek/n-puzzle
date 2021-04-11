@@ -6,7 +6,7 @@ import { MappedNPuzzle, NPuzzle } from '@vendor/n-puzzle/NPuzzle';
 import { NPuzzleSolver, NPuzzleSolverReport, } from '@vendor/n-puzzle/NPuzzleSolver';
 import { LeftHeap } from '@vendor/heap/left-heap/LeftHeap';
 import { DataHolderService } from '@services/data-holder/data-holder.service';
-import { CORNER_TILES, LAST_MOVIE, LINEAR_CONFLICT, MANHATTAN, WRONG_PLACE } from '@vendor/n-puzzle/strategy';
+import { CORNER_TILES, LAST_MOVIE, LINEAR_CONFLICT, MANHATTAN, WRONG_PLACE, } from '@vendor/n-puzzle/strategy';
 import { Expansion, Strategy } from '@vendor/n-puzzle/puzzle.interfaces';
 import { Heap } from '@vendor/heap/binary-heap/heap';
 import { NPuzzleUploadFileFilter } from '@vendor/n-puzzle/NPuzzleUploadFileFilter';
@@ -38,9 +38,8 @@ export const EXPLANATIONS_MAP: {
 export class NPuzzleComponent implements OnInit, OnDestroy {
   uploaded = 0;
   calculated = false;
-  size = 3;
   algorithm: AlgorithmList = 'manhattan';
-  expansionsKey: { key: ExpansionList, title: string }[] = [
+  expansionsKey: { key: ExpansionList; title: string }[] = [
     {key: 'linearConflict', title: 'Linear Conflict'},
     {key: 'lastMovie', title: 'Last Movie'},
     {key: 'cornerTiles', title: 'Corner Tiles'},
@@ -49,11 +48,23 @@ export class NPuzzleComponent implements OnInit, OnDestroy {
   results: NPuzzleSolverReport[] = [];
   // expansions: Expansion<NPuzzle>[] = [];
   expansions = new FormControl();
+  private sizeHolder = 3;
 
   constructor(
     private readonly zone: NgZone,
     private readonly dataHolder: DataHolderService
   ) {
+  }
+
+  get size(): number {
+    return this.sizeHolder;
+  }
+
+  set size(value) {
+    this.sizeHolder = value;
+    if (value > 3) {
+      this.algorithm = 'manhattan';
+    }
   }
 
   ngOnInit(): void {

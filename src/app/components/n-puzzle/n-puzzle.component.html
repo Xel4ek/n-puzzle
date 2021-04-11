@@ -31,25 +31,23 @@
   <div (click)="clear()" class="btn shine">Clear</div>
 </div>
 
-<mat-accordion>
-  <mat-expansion-panel>
-    <mat-expansion-panel-header>
-      <mat-panel-title> Calculations: {{ results.length }} </mat-panel-title>
-      <mat-panel-description> Total information </mat-panel-description>
-    </mat-expansion-panel-header>
-    <app-total-information></app-total-information>
-  </mat-expansion-panel>
+<mat-expansion-panel>
+  <mat-expansion-panel-header>
+    <mat-panel-title> Calculations: {{ results.length }} </mat-panel-title>
+    <mat-panel-description> Total information </mat-panel-description>
+  </mat-expansion-panel-header>
+  <app-total-information></app-total-information>
+</mat-expansion-panel>
 
-  <mat-expansion-panel *ngFor="let result of results.reverse(); index as i">
-    <mat-expansion-panel-header>
-      <mat-panel-title> Calculation #{{ results.length - i }} </mat-panel-title>
-      <mat-panel-description>
-        Get: {{ result.done | date: "HH:mm:ss" }}
-      </mat-panel-description>
-    </mat-expansion-panel-header>
-    <app-n-puzzle-result
-      [index]="results.length - i"
-      [result]="result"
-    ></app-n-puzzle-result>
-  </mat-expansion-panel>
-</mat-accordion>
+<mat-expansion-panel *ngFor="let result of results.reverse(); index as i">
+  <mat-expansion-panel-header>
+    <mat-panel-title [ngClass]="result.solvable ? 'green' : 'red'"> Calculation [ {{ results.length - i }} ] </mat-panel-title>
+    <mat-panel-description class="title__time">
+      Get: {{ result.done | date: "HH:mm:ss" }}
+    </mat-panel-description>
+  </mat-expansion-panel-header>
+  <app-n-puzzle-result
+    [index]="results.length - i"
+    [result]="result"
+  ></app-n-puzzle-result>
+</mat-expansion-panel>

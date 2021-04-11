@@ -8,17 +8,17 @@ import { NPuzzle } from '@vendor/n-puzzle/NPuzzle';
   styleUrls: ['./n-puzzle-grid.component.scss'],
 })
 export class NPuzzleGridComponent implements OnInit, AfterViewInit{
-  @Input() result!: NPuzzleSolverReport;
+  @Input() result!: NPuzzle;
   size = 0;
 
   constructor(private readonly elementRef: ElementRef) {
   }
 
   ngOnInit(): void {
-    this.size = this.result.sourceInstance.size;
+    this.size = this.result.size;
   }
 
   ngAfterViewInit(): void {
-    this.elementRef.nativeElement.style.setProperty('--rowNum', this.result.sourceInstance.size);
+    this.elementRef.nativeElement.style.setProperty('--rowNum', this.result.size);
   }
 }

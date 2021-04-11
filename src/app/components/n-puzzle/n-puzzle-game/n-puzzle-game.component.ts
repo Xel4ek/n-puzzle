@@ -28,7 +28,7 @@ export class NPuzzleGameComponent implements OnInit, OnChanges {
   ngOnInit(): void {}
   solveItPlz(): void {
     if (this.game && this.puzzle) {
-      this.solveIt.emit({ ...this.puzzle, instance: this.game });
+      this.solveIt.emit({ ...this.puzzle, instance: [...this.game] });
     }
   }
   ngOnChanges(changes: SimpleChanges): void {

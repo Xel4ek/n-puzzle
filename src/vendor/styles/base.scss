@@ -7,6 +7,22 @@
   border-radius: .3rem;
   cursor: pointer;
   font-style: italic;
+  &__left, &__right, &__middle {
+  }
+  &__left {
+    border-radius: 50% 0 0 50%;
+   }
+  &__right {
+    border-radius: 0 50% 50% 0;
+  }
+  &__middle {
+    border-radius: 0;
+  }
+}
+.btn__block {
+  display: flex;
+  gap: 2rem;
+  justify-content: space-around;
 }
 
 .shine {

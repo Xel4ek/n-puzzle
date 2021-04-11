@@ -1,25 +1,4 @@
 .card {
-  .red {
-    color: #830101;
-  }
-  .green {
-    color: #06cf06;
-  }
-  .title {
-    display: flex;
-    padding: 0 2rem;
-    gap: 2rem;
-    &__number {
-      font-weight: bold;
-    }
-
-    &__time {
-      font-style: italic;
-      font-weight: 300;
-      color: #4e4e4e;
-    }
-  }
-
   &__row {
     display: flex;
   }
@@ -37,6 +16,40 @@
 
     .info__row {
       padding: 0.5rem 1rem;
+    }
+  }
+}
+.control {
+  display: flex;
+  justify-content: center;
+  padding: 1rem 0;
+  gap: 0.2rem;
+}
+.solve {
+  font-size: 2rem;
+  font-weight: 500;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  text-transform: uppercase;
+  .step {
+    margin-bottom: 1rem;
+    &__pass {
+      color: #19cd19;
+    }
+
+    &__current {
+      color: purple;
+      transform: scale(1.10);
+      position: relative;
+      &::after {
+        content: "";
+        position: absolute;
+        border: 6px solid transparent;
+        border-top: 12px solid #630263;
+        top: -15px;
+        left: 10px;
+      }
     }
   }
 }

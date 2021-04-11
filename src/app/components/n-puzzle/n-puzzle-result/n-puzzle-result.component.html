@@ -1,21 +1,60 @@
 <div class="card">
-   <div class="title">
-    <div class="title__number" [ngClass]="result.solvable ? 'green' : 'red'">[ {{index}} ]</div>
-     <div class="title__time">    {{result.done | date: 'HH:mm:ss'}}
-     </div>
-  </div>
   <div class="card__row">
     <div class="card__puzzle">
-      <app-n-puzzle-grid [result]="result"></app-n-puzzle-grid>
-      <pre>
-        {{result.solution }}
-      </pre>
+      <app-n-puzzle-grid *ngIf="instance" [result]="instance"></app-n-puzzle-grid>
+      <div class="info__row-data control">
+        <!--  <div (click)="solve()" class="btn shine">Solve</div>-->
+        <!--  <div (click)="generate(); solve()" class="btn shine">Generate & Solve</div>-->
+        <div (click)="backward()" class="btn btn__left shine"><i class="fas fa-backward"></i></div>
+        <div (click)="pause()" *ngIf="play$ | async; else playBnt" class="btn btn__middle shine">
+          <i class="fas fa-pause"></i>
+        </div>
+        <ng-template #playBnt>
+          <div (click)="play()" class="btn btn__middle shine">
+            <i class="fas fa-play"></i>
+          </div>
+        </ng-template>
+        <div (click)="forward()" class="btn btn__right shine"><i class="fas fa-forward"></i></div>
+      </div>
     </div>
     <div class="card__info">
-      <div class="info__row">selectedStates: <span class="info__row-data">{{result.closedNodes | number: '1.0-2'}}</span> states</div>
-      <div class="info__row">implementsNodeCount: <span class="info__row-data">{{result.implementsNodeCount | number: '1.0-2'}}</span> nodes</div>
-      <div class="info__row">requiredSteps: <span class="info__row-data">{{result.requiredSteps | number: '1.0-2'}}</span> steps</div>
-      <div class="info__row">timeUsed: <span class="info__row-data">{{result.timeUsed | number: '1.0-2'}}</span> milliseconds</div>
+      <div class="info__row">
+        selectedStates:
+        <span class="info__row-data">{{
+          result.closedNodes | number: "1.0-2"
+          }}</span>
+        states
+      </div>
+      <div class="info__row">
+        implementsNodeCount:
+        <span class="info__row-data">{{
+          result.implementsNodeCount | number: "1.0-2"
+          }}</span>
+        nodes
+      </div>
+      <div class="info__row">
+        requiredSteps:
+        <span class="info__row-data">{{
+          result.requiredSteps | number: "1.0-2"
+          }}</span>
+        steps
+      </div>
+      <div class="info__row">
+        timeUsed:
+        <span class="info__row-data">{{
+          result.timeUsed | number: "1.0-2"
+          }}</span>
+        milliseconds
+      </div>
+      <div class="info__row">Solve:</div>
+      <div *ngIf="{progress: progressBar$ | async} as data" class=" info__row solve">
+        <div *ngFor="let l of solution index as i"
+             [ngClass]="{
+              'step__pass': data.progress !== null ? data.progress > (i - 1) : false,
+              'step__current': data.progress !== null ? (data.progress + 1) === i : i === 0
+              }"
+             class="step">{{l}}</div>
+      </div>
     </div>
   </div>
 </div>

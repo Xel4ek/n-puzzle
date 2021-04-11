@@ -58,7 +58,7 @@
     </mat-expansion-panel-header>
     <app-total-information></app-total-information>
   </mat-expansion-panel>
-  <mat-expansion-panel *ngFor="let result of results.reverse(); index as i">
+  <mat-expansion-panel *ngFor="let result of results.slice().reverse(); index as i">
     <mat-expansion-panel-header>
       <mat-panel-title [ngClass]="result.solvable ? 'green' : 'red'">
         Calculation [ {{ results.length - i }} ]

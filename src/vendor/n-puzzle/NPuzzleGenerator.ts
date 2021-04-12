@@ -15,6 +15,7 @@ export class NPuzzleGenerator {
   */
   constructor(
     size: number,
+    private readonly mode: 'snake' | 'regular',
     key: 'solvable' | 'unsolvable' = 'solvable'
   ) {
     this.size = size;
@@ -32,7 +33,7 @@ export class NPuzzleGenerator {
     //   console.log('new');
     //   valid = new NPuzzleValidator().validate(this.instance);
     // }
-    const valid = NPuzzleValidator.validate(this.instance);
+    const valid = NPuzzleValidator.validate(this.instance, this.mode);
     if (
       (valid && this.key === 'unsolvable') ||
       (!valid && this.key === 'solvable')

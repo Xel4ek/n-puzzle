@@ -27,12 +27,15 @@ export class NPuzzleSolver<T extends HeapInterface<P>, P extends NPuzzle> {
     private readonly sourceInstance: P,
     private readonly targetInstance: P,
     private readonly mode: 'twoWay' | 'oneWay',
-    private readonly gameStyle: 'snake' | 'regular',
+    private readonly gameStyle: 'snake' | 'regular'
   ) {
     this.sourceInstance = sourceInstance;
     this.priorityQueue = new PriorityQueue<T, P>(heapClass);
     this.targetInstance = targetInstance;
-    this.solvable = NPuzzleValidator.validate(this.sourceInstance);
+    this.solvable = NPuzzleValidator.validate(
+      this.sourceInstance,
+      this.gameStyle
+    );
     this.strategy = new StrategyFactory(strategyConfig);
   }
 
@@ -48,7 +51,7 @@ export class NPuzzleSolver<T extends HeapInterface<P>, P extends NPuzzle> {
       timeUsed: performance.now() - this.startTime,
       size: this.sourceInstance.size,
       mode: this.mode,
-      gameStyle: this.gameStyle
+      gameStyle: this.gameStyle,
     };
   }
   private implementsNodeCount = 0;

@@ -12,11 +12,11 @@ export class NPuzzleVisualizerComponent implements OnInit {
   ngOnInit(): void {}
 
   visualize(): void {
-    const pg5 = new NPuzzleGenerator(5);
+    const pg5 = new NPuzzleGenerator(5, 'snake');
     console.log(pg5);
-    const pg4 = new NPuzzleGenerator(4);
+    const pg4 = new NPuzzleGenerator(4, 'snake');
     console.log(pg4);
-    const pg3 = new NPuzzleGenerator(3);
+    const pg3 = new NPuzzleGenerator(3, 'snake');
     console.log(pg3);
   }
 }

@@ -21,6 +21,7 @@ export class AppComponent {
         name: 'keywords',
         content: '15 puzzle, n puzzle, algorithm, 21 school, A*',
       },
+      { name: 'viewport', content: 'width=device-width, initial-scale=1' },
     ]);
   }
 }

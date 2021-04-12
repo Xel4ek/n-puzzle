@@ -10,8 +10,11 @@ import {
 } from '@angular/core';
 import { NPuzzleGenerator } from '@vendor/n-puzzle/NPuzzleGenerator';
 import { MappedNPuzzle, NPuzzle } from '@vendor/n-puzzle/NPuzzle';
-import { ALGORITHMS_MAP, EXPLANATIONS_MAP } from '@components/n-puzzle/n-puzzle.component';
-import { NPuzzlerService } from "@services/n-puzzler/npuzzler.service";
+import {
+  ALGORITHMS_MAP,
+  EXPLANATIONS_MAP,
+} from '@components/n-puzzle/n-puzzle.component';
+import { NPuzzlerService } from '@services/n-puzzler/npuzzler.service';
 
 @Component({
   selector: 'app-n-puzzle-game[size]',
@@ -30,9 +33,10 @@ export class NPuzzleGameComponent implements OnInit, OnChanges {
   algorithmsMap = Object.entries(ALGORITHMS_MAP);
   expansionsMap = Object.entries(EXPLANATIONS_MAP);
   @Output() solveIt = new EventEmitter<NPuzzle>();
-  constructor(private readonly elementRef: ElementRef,
-              private readonly nPuzzlerService: NPuzzlerService) {
-  }
+  constructor(
+    private readonly elementRef: ElementRef,
+    private readonly nPuzzlerService: NPuzzlerService
+  ) {}
 
   ngOnInit(): void {}
   solveItPlz(): void {
@@ -53,9 +57,7 @@ export class NPuzzleGameComponent implements OnInit, OnChanges {
     this.gamePuzzle = new NPuzzle(this.size, this.game);
     this.targetPuzzle = this.nPuzzlerService.target(this.gamePuzzle);
 
-    this.target = this.targetPuzzle.instance.join(
-      ' '
-    );
+    this.target = this.targetPuzzle.instance.join(' ');
   }
 
   restore(): void {
@@ -92,5 +94,8 @@ export class NPuzzleGameComponent implements OnInit, OnChanges {
       return (dCol === 1 && dRow === 0) || (dCol === 0 && dRow === 1);
     }
     return false;
+  }
+  ready(item: number, index: number): boolean {
+    return this.targetPuzzle?.mapInstance.get(item)?.index === index;
   }
 }

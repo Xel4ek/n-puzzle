@@ -1,6 +1,9 @@
 .card {
   &__row {
     display: flex;
+    @media screen and (max-width: 950px) {
+      flex-direction: column;
+    }
   }
 
   &__info {

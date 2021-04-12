@@ -1,8 +1,16 @@
 :host {
   display: flex;
+  @media screen and (max-width: 950px) {
+    flex-direction: column;
+  }
+
   gap: 3rem;
   .panels {
     padding-left: 3rem;
+    @media screen and (max-width: 950px) {
+      padding: 0;
+      margin: 0 auto;
+    }
   }
   .winner {
     animation: winner 2s infinite;
@@ -28,7 +36,7 @@
       gap: 1rem;
       .title {
         font-weight: bold;
-        padding-bottom: .5rem;
+        padding-bottom: 0.5rem;
       }
       &__content {
         display: flex;
@@ -36,7 +44,7 @@
           flex: 1 1 auto;
         }
         :nth-child(n) {
-          padding-bottom: .5rem;
+          padding-bottom: 0.5rem;
         }
       }
       &__block {
@@ -48,8 +56,15 @@
 }
 
 @keyframes winner {
-  from, to {transform: scale(1)}
-  25%,75% {transform: scale(.9)}
-  50% {transform: scale(1.1)}
-
+  from,
+  to {
+    transform: scale(1);
+  }
+  25%,
+  75% {
+    transform: scale(0.9);
+  }
+  50% {
+    transform: scale(1.1);
+  }
 }

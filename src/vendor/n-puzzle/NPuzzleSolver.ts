@@ -15,6 +15,9 @@ export interface NPuzzleSolverReport {
   timeUsed: number; // milliseconds
   closedNodes: number;
   size: number;
+  mode: 'twoWay' | 'oneWay';
+  gameStyle: 'snake' | 'regular';
+  heuristic?: string;
 }
 type Actions = 'l' | 'r' | 'd' | 'u';
 export class NPuzzleSolver<T extends HeapInterface<P>, P extends NPuzzle> {
@@ -23,7 +26,8 @@ export class NPuzzleSolver<T extends HeapInterface<P>, P extends NPuzzle> {
     private readonly strategyConfig: Strategy<P>,
     private readonly sourceInstance: P,
     private readonly targetInstance: P,
-    private readonly mode: 'twoWay' | 'oneWay' = 'twoWay'
+    private readonly mode: 'twoWay' | 'oneWay',
+    private readonly gameStyle: 'snake' | 'regular',
   ) {
     this.sourceInstance = sourceInstance;
     this.priorityQueue = new PriorityQueue<T, P>(heapClass);
@@ -43,6 +47,8 @@ export class NPuzzleSolver<T extends HeapInterface<P>, P extends NPuzzle> {
       done: Date.now(),
       timeUsed: performance.now() - this.startTime,
       size: this.sourceInstance.size,
+      mode: this.mode,
+      gameStyle: this.gameStyle
     };
   }
   private implementsNodeCount = 0;

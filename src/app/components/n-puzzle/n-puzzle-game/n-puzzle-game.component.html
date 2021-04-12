@@ -1,6 +1,6 @@
 <div class="panels">
-  <div class="panel btn" *ngFor="let item of game"
-       [ngClass]="{'hidden': item === 0, 'can-move shine': canMove(item), 'complete': solved}"
+  <div class="panel btn" *ngFor="let item of game; index as index"
+       [ngClass]="{'hidden': item === 0, 'can-move shine': canMove(item), 'complete': solved, 'ready' : ready(item, index)}"
        (click)="canMove(item) ? move(item): '' " ><span class="text3d">{{item}}</span></div>
 </div>
 <div class="control">

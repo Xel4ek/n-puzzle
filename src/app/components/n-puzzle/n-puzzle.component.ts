@@ -48,7 +48,7 @@ export class NPuzzleComponent implements OnInit, OnDestroy {
   expansions = new FormControl([]);
   private sizeHolder = 3;
   private solveMode: 'oneWay' | 'twoWay' = 'twoWay'; // 'oneWay' | 'twoWay' true | false
-  private NPuzzleStyle: 'snake' | 'regular' = 'snake'; // 'snake' | 'regular' true | false
+  private nPuzzleStyle: 'snake' | 'regular' = 'snake'; // 'snake' | 'regular' true | false
 
   constructor(
     private readonly zone: NgZone,
@@ -58,7 +58,7 @@ export class NPuzzleComponent implements OnInit, OnDestroy {
   ) {
     this.subscription = this.modeService.style().pipe(map((style) => {
       this.solveMode = style.solveStyle ? 'twoWay' : 'oneWay';
-      this.NPuzzleStyle = style.nPuzzleStyle ? 'snake' : 'regular';
+      this.nPuzzleStyle = style.nPuzzleStyle ? 'snake' : 'regular';
     })).subscribe();
   }
 
@@ -143,7 +143,8 @@ export class NPuzzleComponent implements OnInit, OnDestroy {
         },
         sourceInstance,
         targetInstance,
-        this.solveMode
+        this.solveMode,
+        this.nPuzzleStyle,
       );
     }
     if (this.heap === 'binary') {
@@ -157,12 +158,15 @@ export class NPuzzleComponent implements OnInit, OnDestroy {
         },
         sourceInstance,
         targetInstance,
-        this.solveMode
+        this.solveMode,
+        this.nPuzzleStyle
       );
     }
     const result = this.zone.runOutsideAngular(() => {
       return solver.solve();
     });
+    const expansions: string = this.expansions.value.join(' + ');
+    result.heuristic = this.algorithm + (expansions ? ' & ' + expansions : '');
     this.results.push(result);
     this.dataHolder.updateResult(this.results);
     this.calculated = false;

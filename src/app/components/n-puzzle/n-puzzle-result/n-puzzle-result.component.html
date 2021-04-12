@@ -40,6 +40,18 @@
     </div>
     <div class="card__info">
       <div class="info__row">
+        Game Style:
+        <span class="info__row-data">{{ result.gameStyle | prettyName }}</span>
+      </div>
+      <div class="info__row">
+        Mode User:
+        <span class="info__row-data">{{ result.mode | prettyName }}</span>
+      </div>
+      <div class="info__row">
+        Heuristic:
+        <span class="info__row-data">{{ result.heuristic | prettyName }}</span>
+      </div>
+      <div class="info__row">
         Selected States:
         <span class="info__row-data">{{
           result.closedNodes | number: "1.0-2"

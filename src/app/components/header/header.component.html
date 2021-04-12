@@ -1,0 +1,23 @@
+<header class="header">
+  <div class="container">
+    <div class="content">
+      <div class="title">N-Puzzle Solver</div>
+      <div class="sliders" *ngIf="mode$ | async as mode">
+        <mat-slide-toggle
+          color="primary"
+          class="slide"
+          [checked]="mode.nPuzzleStyle"
+          (change)="toggleNPuzzleType()">
+          <span class="slide__text">{{ mode.nPuzzleStyle ? 'Snake' : 'Regular'}}</span>
+        </mat-slide-toggle>
+        <mat-slide-toggle
+          color="primary"
+          class="slide"
+          [checked]="mode.solveStyle"
+          (change)="toggleSolveStyle()">
+           <span class="slide__text">{{ mode.solveStyle ? 'Two' : 'One'}} Way</span>
+        </mat-slide-toggle>
+      </div>
+    </div>
+  </div>
+</header>

@@ -11,6 +11,7 @@ import { Expansion, Strategy } from '@vendor/n-puzzle/puzzle.interfaces';
 import { Heap } from '@vendor/heap/binary-heap/heap';
 import { NPuzzleUploadFileFilter } from '@vendor/n-puzzle/NPuzzleUploadFileFilter';
 import { FormControl } from '@angular/forms';
+import { ModeService } from "@services/mode/mode.service";
 
 type AlgorithmList = 'manhattan' | 'wrongPlace';
 export const ALGORITHMS_MAP: {
@@ -34,6 +35,7 @@ export const EXPLANATIONS_MAP: {
   styleUrls: ['./n-puzzle.component.scss'],
 })
 export class NPuzzleComponent implements OnInit, OnDestroy {
+  private readonly subscription: Subscription;
   uploaded = 0;
   calculated = false;
   algorithm: AlgorithmList = 'manhattan';
@@ -44,11 +46,18 @@ export class NPuzzleComponent implements OnInit, OnDestroy {
   results: NPuzzleSolverReport[] = [];
   expansions = new FormControl([]);
   private sizeHolder = 3;
+  private solveMode: 'oneWay' | 'twoWay' = 'twoWay'; // 'oneWay' | 'twoWay' true | false
+  private NPuzzleStyle: 'snake' | 'regular' = 'snake'; // 'snake' | 'regular' true | false
 
   constructor(
     private readonly zone: NgZone,
-    private readonly dataHolder: DataHolderService
+    private readonly dataHolder: DataHolderService,
+    private readonly modeService: ModeService,
   ) {
+    this.subscription = this.modeService.style().pipe(map((style) => {
+      this.solveMode = style.solveStyle ? 'twoWay' : 'oneWay';
+      this.NPuzzleStyle = style.nPuzzleStyle ? 'snake' : 'regular';
+    })).subscribe();
   }
 
   get size(): number {
@@ -118,7 +127,7 @@ export class NPuzzleComponent implements OnInit, OnDestroy {
       return;
     }
     this.calculated = true;
-    const sourceInstance = puzzle;
+    const sourceInstance = new MappedNPuzzle(puzzle.size, puzzle.instance);
     const targetInstance = (() => {
       const target = [...puzzle.instance].sort((a, b) => a - b);
       return new MappedNPuzzle(puzzle.size, [...target.slice(1), 0]);
@@ -134,7 +143,8 @@ export class NPuzzleComponent implements OnInit, OnDestroy {
           ),
         },
         sourceInstance,
-        targetInstance
+        targetInstance,
+        this.solveMode
       );
     }
     if (this.heap === 'binary') {
@@ -147,7 +157,8 @@ export class NPuzzleComponent implements OnInit, OnDestroy {
           ),
         },
         sourceInstance,
-        targetInstance
+        targetInstance,
+        this.solveMode
       );
     }
     const result = this.zone.runOutsideAngular(() => {

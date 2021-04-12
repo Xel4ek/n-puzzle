@@ -12,6 +12,7 @@ import { Heap } from '@vendor/heap/binary-heap/heap';
 import { NPuzzleUploadFileFilter } from '@vendor/n-puzzle/NPuzzleUploadFileFilter';
 import { FormControl } from '@angular/forms';
 import { ModeService } from "@services/mode/mode.service";
+import { NPuzzlerService } from "@services/n-puzzler/npuzzler.service";
 
 type AlgorithmList = 'manhattan' | 'wrongPlace';
 export const ALGORITHMS_MAP: {
@@ -53,6 +54,7 @@ export class NPuzzleComponent implements OnInit, OnDestroy {
     private readonly zone: NgZone,
     private readonly dataHolder: DataHolderService,
     private readonly modeService: ModeService,
+    private readonly nPuzzlerService: NPuzzlerService
   ) {
     this.subscription = this.modeService.style().pipe(map((style) => {
       this.solveMode = style.solveStyle ? 'twoWay' : 'oneWay';
@@ -128,10 +130,7 @@ export class NPuzzleComponent implements OnInit, OnDestroy {
     }
     this.calculated = true;
     const sourceInstance = new MappedNPuzzle(puzzle.size, puzzle.instance);
-    const targetInstance = (() => {
-      const target = [...puzzle.instance].sort((a, b) => a - b);
-      return new MappedNPuzzle(puzzle.size, [...target.slice(1), 0]);
-    })();
+    const targetInstance = this.nPuzzlerService.target(sourceInstance);
     let solver: NPuzzleSolver<any, any>;
     if (this.heap === 'left') {
       solver = new NPuzzleSolver<LeftHeap<NPuzzle>, NPuzzle>(

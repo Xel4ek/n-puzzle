@@ -3,6 +3,7 @@ import { ModeService } from '@services/mode/mode.service';
 import { Subject } from 'rxjs';
 import { map, takeUntil } from 'rxjs/operators';
 import { MappedNPuzzle, NPuzzle } from '@vendor/n-puzzle/NPuzzle';
+import { NPuzzleGenerator } from '@vendor/n-puzzle/NPuzzleGenerator';
 
 @Injectable({
   providedIn: 'root',
@@ -31,17 +32,18 @@ export class NPuzzlerService implements OnDestroy {
       ]);
     }
     if (this.mode === 'snake') {
-      const target = [];
-      if (puzzle.size === 3) {
-        target.push(1, 2, 3, 8, 0, 4, 7, 6, 5);
-      } else if (puzzle.size === 4) {
-        target.push(1, 2, 3, 4, 12, 13, 14, 5, 11, 0, 15, 6, 10, 9, 8, 7);
-      } else {
-        target.push(
-          ...[...[...puzzle.instance].sort((a, b) => a - b).slice(1), 0]
-        );
-      }
-      return new MappedNPuzzle(puzzle.size, target);
+      // const target = [];
+      // if (puzzle.size === 3) {
+      //   target.push(1, 2, 3, 8, 0, 4, 7, 6, 5);
+      // } else if (puzzle.size === 4) {
+      //   target.push(1, 2, 3, 4, 12, 13, 14, 5, 11, 0, 15, 6, 10, 9, 8, 7);
+      // } else {
+      //   target.push(
+      //     ...[...[...puzzle.instance].sort((a, b) => a - b).slice(1), 0]
+      //   );
+      // }
+      // return new MappedNPuzzle(puzzle.size, target);
+      return NPuzzleGenerator.snakeTragetGenerator(puzzle.size);
     }
     throw new Error('invalid NPuzzle mode');
   }

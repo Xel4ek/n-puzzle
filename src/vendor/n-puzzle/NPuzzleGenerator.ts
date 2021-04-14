@@ -25,6 +25,42 @@ export class NPuzzleGenerator {
     );
   }
 
+  //TODO: make snake generator
+  static snakeTragetGenerator(size: number): MappedNPuzzle {
+    function range(startAt: number = 0, n: number): ReadonlyArray<number> {
+      if (startAt === n) {
+        return [...Array(1).keys()].map((i) => i);
+      }
+      return [...Array(n).keys()].map((i) => i + startAt);
+    }
+
+    let m = 0;
+    let st = 1;
+    const mat = Array(size * size);
+    for (let v of range(0, Math.floor(size / 2))) {
+      for (let i of range(0, size - m)) {
+        mat[i + v + v * size] = st;
+        st += 1;
+      }
+      for (let i of range(v + 1, size - v - 1)) {
+        mat[size * i + (size - 1 - v)] = st;
+        st += 1;
+      }
+      for (let i of range(v + 1, size - v - 1)) {
+        mat[size * size - 1 - i - size * v] = st;
+        st += 1;
+      }
+      for (let i of range(v, size - v - 2)) {
+        mat[size * (size - 2 - i) + v] = st;
+        st += 1;
+      }
+      m += 2;
+    }
+    console.log(mat);
+    return new MappedNPuzzle(size, mat);
+    // throw new Error('Method not implemented');
+  }
+
   generate(): NPuzzle {
     // for (let valid = false; !valid; ) {
     //   this.instance = [...Array(this.size * this.size).keys()].sort(

@@ -43,7 +43,7 @@ export class NPuzzlerService implements OnDestroy {
       //   );
       // }
       // return new MappedNPuzzle(puzzle.size, target);
-      return NPuzzleGenerator.snakeTragetGenerator(puzzle.size);
+      return NPuzzleGenerator.snakeTargetGenerator(puzzle.size);
     }
     throw new Error('invalid NPuzzle mode');
   }

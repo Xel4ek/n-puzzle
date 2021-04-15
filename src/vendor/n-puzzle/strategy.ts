@@ -1,5 +1,5 @@
 import { MappedNPuzzle, NPuzzle } from './NPuzzle';
-import { Expansion, Strategy } from './puzzle.interfaces';
+import { Expansion, ExpansionFactory, Strategy } from './puzzle.interfaces';
 
 const wrongPlace = (current: NPuzzle, target: NPuzzle): number => {
   if (!(target instanceof MappedNPuzzle)) {
@@ -146,7 +146,7 @@ const arrayConflict = (current: number[], target: number[]): number => {
   return score;
 };
 
-export const LINEAR_CONFLICT: Expansion<NPuzzle> = (
+export const LINEAR_CONFLICT: ExpansionFactory<NPuzzle> = (mode) =>  (
   { instance },
   { instance: target, size }
 ) => {

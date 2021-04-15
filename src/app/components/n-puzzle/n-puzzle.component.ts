@@ -7,7 +7,7 @@ import { NPuzzleSolver, NPuzzleSolverReport, } from '@vendor/n-puzzle/NPuzzleSol
 import { LeftHeap } from '@vendor/heap/left-heap/LeftHeap';
 import { DataHolderService } from '@services/data-holder/data-holder.service';
 import { LINEAR_CONFLICT, MANHATTAN, WRONG_PLACE, } from '@vendor/n-puzzle/strategy';
-import { Expansion, Strategy } from '@vendor/n-puzzle/puzzle.interfaces';
+import { AvailableGameType, Expansion, ExpansionFactory, Strategy } from "@vendor/n-puzzle/puzzle.interfaces";
 import { Heap } from '@vendor/heap/binary-heap/heap';
 import { NPuzzleUploadFileFilter } from '@vendor/n-puzzle/NPuzzleUploadFileFilter';
 import { FormControl } from '@angular/forms';
@@ -24,8 +24,8 @@ export const ALGORITHMS_MAP: {
 type HeapList = 'left' | 'binary';
 
 type ExpansionList = 'linearConflict';
-export const EXPLANATIONS_MAP: {
-  [key in ExpansionList]: Expansion<NPuzzle | MappedNPuzzle>;
+export const EXPANSIONS_MAP: {
+  [key in ExpansionList]: ExpansionFactory<NPuzzle | MappedNPuzzle>;
 } = {
   linearConflict: LINEAR_CONFLICT,
 };
@@ -48,7 +48,7 @@ export class NPuzzleComponent implements OnInit, OnDestroy {
   expansions = new FormControl([]);
   private sizeHolder = 3;
   private solveMode: 'oneWay' | 'twoWay' = 'twoWay'; // 'oneWay' | 'twoWay' true | false
-  private nPuzzleStyle: 'snake' | 'regular' = 'snake'; // 'snake' | 'regular' true | false
+  nPuzzleStyle: AvailableGameType = 'snake'; // 'snake' | 'regular' true | false
 
   constructor(
     private readonly zone: NgZone,
@@ -138,7 +138,7 @@ export class NPuzzleComponent implements OnInit, OnDestroy {
         {
           ...ALGORITHMS_MAP[this.algorithm],
           expansion: this.expansions.value.map(
-            (expansion: ExpansionList) => EXPLANATIONS_MAP[expansion]
+            (expansion: ExpansionList) => EXPANSIONS_MAP[expansion](this.nPuzzleStyle)
           ),
         },
         sourceInstance,
@@ -153,7 +153,7 @@ export class NPuzzleComponent implements OnInit, OnDestroy {
         {
           ...ALGORITHMS_MAP[this.algorithm],
           expansion: this.expansions.value.map(
-            (expansion: ExpansionList) => EXPLANATIONS_MAP[expansion]
+            (expansion: ExpansionList) => EXPANSIONS_MAP[expansion](this.nPuzzleStyle)
           ),
         },
         sourceInstance,

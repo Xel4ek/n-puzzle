@@ -113,11 +113,11 @@ export class NPuzzleSolver<T extends HeapInterface<P>, P extends NPuzzle> {
           const priority =
             child.history.length + strategy.h(child, this.targetInstance);
           if (priority <= strategy.bound(child)) {
-            this.implementsNodeCount++;
-            this.priorityQueue.insert(
-              child.history.length + strategy.h(child, this.targetInstance),
-              child
-            );
+          this.implementsNodeCount++;
+          this.priorityQueue.insert(
+            priority,
+            child
+          );
           }
         }
       }

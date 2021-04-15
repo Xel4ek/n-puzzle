@@ -52,8 +52,16 @@ export class NPuzzleComponent implements OnInit, OnDestroy {
   uploaded = 0;
   calculated = false;
   algorithm: AlgorithmList = 'manhattan';
-  expansionsKey: { key: ExpansionList; title: string }[] = [
-    { key: 'linearConflict', title: 'Linear Conflict' },
+  expansionsKey: {
+    key: ExpansionList;
+    title: string;
+    available: (option: string) => boolean;
+  }[] = [
+    {
+      key: 'linearConflict',
+      title: 'Linear Conflict',
+      available: (gameType) => gameType === 'regular',
+    },
   ];
   heap: HeapList = 'left';
   results: NPuzzleSolverReport[] = [];
@@ -74,6 +82,9 @@ export class NPuzzleComponent implements OnInit, OnDestroy {
         map((style) => {
           this.solveMode = style.solveStyle ? 'twoWay' : 'oneWay';
           this.nPuzzleStyle = style.nPuzzleStyle ? 'snake' : 'regular';
+          if (this.nPuzzleStyle === 'snake') {
+            this.expansions.reset([]);
+          }
         })
       )
       .subscribe();

@@ -53,7 +53,7 @@ export class NPuzzleUploadFileFilter {
               instance.includes(digit)
             )
           ) {
-            if (size > 1 && size < 5) {
+            if (size > 1) {
               this.puzzles.push(new NPuzzle(size, instance));
             }
           }

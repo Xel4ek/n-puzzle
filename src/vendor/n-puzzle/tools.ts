@@ -6,3 +6,6 @@ export function range(
   const size = last === undefined ? sizeOrStart : last - sizeOrStart;
   return [...Array(size).keys()].map(i => i + startAt);
 }
+export function zip(rhs: number[], lhs: number[]): string[] {
+  return rhs.map((_, i) => rhs[i] + ' ' + lhs[i]);
+}

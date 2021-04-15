@@ -1,5 +1,6 @@
 import { MappedNPuzzle, NPuzzle } from './NPuzzle';
-import { Expansion, ExpansionFactory, Strategy } from './puzzle.interfaces';
+import { ExpansionFactory, Strategy } from './puzzle.interfaces';
+import { range, zip } from "@vendor/n-puzzle/tools";
 
 const wrongPlace = (current: NPuzzle, target: NPuzzle): number => {
   if (!(target instanceof MappedNPuzzle)) {
@@ -138,7 +139,7 @@ const arrayConflict = (current: number[], target: number[]): number => {
     for (let i = 0; i < candidates.length - 1; ++i) {
       for (let j = i + 1; j < candidates.length; ++j) {
         if (candidates[i] > candidates[j]) {
-          score += 2;
+          ++score;
         }
       }
     }
@@ -146,20 +147,26 @@ const arrayConflict = (current: number[], target: number[]): number => {
   return score;
 };
 
-export const LINEAR_CONFLICT: ExpansionFactory<NPuzzle> = (mode) =>  (
+export const LINEAR_CONFLICT: ExpansionFactory<NPuzzle> = (mode) => (
   { instance },
   { instance: target, size }
 ) => {
   let accumulator = 0;
-  for (let i = 0; i < size; ++i) {
-    accumulator += arrayConflict(
-      instance.slice(i  * size, (i + 1) * size),
-      target.slice(i * size, (i + 1) * size)
-    );
-    accumulator += arrayConflict(
-      instance.filter((_, index) => index % size === i),
-      target.filter((_, index) => index % size === i)
-    );
+  if (mode === 'regular') {
+    for (let i = 0; i < size; ++i) {
+      accumulator += 2 * arrayConflict(
+        instance.slice(i * size, (i + 1) * size),
+        target.slice(i * size, (i + 1) * size)
+      );
+      accumulator += 2 * arrayConflict(
+        instance.filter((_, index) => index % size === i),
+        target.filter((_, index) => index % size === i)
+      );
+    }
+    return accumulator;
   }
-  return accumulator;
+  if (mode === 'snake') {
+    return accumulator;
+  }
+  return 0;
 };

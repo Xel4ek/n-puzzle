@@ -1,6 +1,44 @@
 import { MappedNPuzzle, NPuzzle } from './NPuzzle';
 import { ExpansionFactory, Strategy } from './puzzle.interfaces';
-import { range, zip } from "@vendor/n-puzzle/tools";
+
+const wrongColOrRow = (current: NPuzzle, target: NPuzzle): number => {
+  if (!(target instanceof MappedNPuzzle)) {
+    throw new Error('target must implement MappedNPuzzle class');
+  }
+  const size = target.size;
+  return current.instance.reduce((acc, cur, currentIndex) => {
+    const point = target.mapInstance.get(cur);
+    if (point) {
+      const { index } = point;
+      const inRow =
+        Math.trunc(index / size) === Math.trunc(currentIndex / size) ? 0 : 1;
+      const inCol = index % size === currentIndex % size ? 0 : 1;
+      return acc + inCol + inRow;
+    } else {
+      throw new Error('no Map');
+    }
+  }, 0);
+};
+
+const nSwap = (current: NPuzzle, target: NPuzzle): number => {
+  if (!(target instanceof MappedNPuzzle)) {
+    throw new Error('target must implement MappedNPuzzle class');
+  }
+  let swaps = 0;
+  const instance = [...current.instance];
+  for (let index = 0; index < instance.length; ++index) {
+    const targetValue = target.instance[index];
+    if (targetValue !== instance[index]) {
+      const targetIndex = instance.indexOf(targetValue);
+      [instance[targetIndex], instance[index]] = [
+        instance[index],
+        instance[targetIndex],
+      ];
+      ++swaps;
+    }
+  }
+  return swaps;
+};
 
 const wrongPlace = (current: NPuzzle, target: NPuzzle): number => {
   if (!(target instanceof MappedNPuzzle)) {
@@ -124,6 +162,16 @@ export const WRONG_PLACE: Omit<Strategy<NPuzzle>, 'expansion'> = {
   h: wrongPlace,
 };
 
+export const SWAP_COUNT: Omit<Strategy<NPuzzle>, 'expansion'> = {
+  ...BASE_STRATEGY,
+  h: nSwap,
+};
+
+export const WRONG_COL_OR_ROW: Omit<Strategy<NPuzzle>, 'expansion'> = {
+  ...BASE_STRATEGY,
+  h: wrongColOrRow,
+};
+
 const arrayConflict = (current: number[], target: number[]): number => {
   const candidates: number[] = [];
   for (const item of target) {
@@ -154,14 +202,18 @@ export const LINEAR_CONFLICT: ExpansionFactory<NPuzzle> = (mode) => (
   let accumulator = 0;
   if (mode === 'regular') {
     for (let i = 0; i < size; ++i) {
-      accumulator += 2 * arrayConflict(
-        instance.slice(i * size, (i + 1) * size),
-        target.slice(i * size, (i + 1) * size)
-      );
-      accumulator += 2 * arrayConflict(
-        instance.filter((_, index) => index % size === i),
-        target.filter((_, index) => index % size === i)
-      );
+      accumulator +=
+        2 *
+        arrayConflict(
+          instance.slice(i * size, (i + 1) * size),
+          target.slice(i * size, (i + 1) * size)
+        );
+      accumulator +=
+        2 *
+        arrayConflict(
+          instance.filter((_, index) => index % size === i),
+          target.filter((_, index) => index % size === i)
+        );
     }
     return accumulator;
   }

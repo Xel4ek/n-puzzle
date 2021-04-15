@@ -12,11 +12,12 @@ import { DataHolderService } from '@services/data-holder/data-holder.service';
 import {
   LINEAR_CONFLICT,
   MANHATTAN,
+  SWAP_COUNT,
+  WRONG_COL_OR_ROW,
   WRONG_PLACE,
 } from '@vendor/n-puzzle/strategy';
 import {
   AvailableGameType,
-  Expansion,
   ExpansionFactory,
   Strategy,
 } from '@vendor/n-puzzle/puzzle.interfaces';
@@ -26,12 +27,14 @@ import { FormControl } from '@angular/forms';
 import { ModeService } from '@services/mode/mode.service';
 import { NPuzzlerService } from '@services/n-puzzler/npuzzler.service';
 
-type AlgorithmList = 'manhattan' | 'wrongPlace';
+type AlgorithmList = 'manhattan' | 'wrongPlace' | 'swapCount' | 'wrongColOrRow';
 export const ALGORITHMS_MAP: {
   [key in AlgorithmList]: Omit<Strategy<NPuzzle>, 'expansion'>;
 } = {
   manhattan: MANHATTAN,
   wrongPlace: WRONG_PLACE,
+  swapCount: SWAP_COUNT,
+  wrongColOrRow: WRONG_COL_OR_ROW,
 };
 type HeapList = 'left' | 'binary';
 
@@ -48,7 +51,6 @@ export const EXPANSIONS_MAP: {
   styleUrls: ['./n-puzzle.component.scss'],
 })
 export class NPuzzleComponent implements OnInit, OnDestroy {
-  private readonly subscription: Subscription;
   uploaded = 0;
   calculated = false;
   algorithm: AlgorithmList = 'manhattan';
@@ -66,9 +68,10 @@ export class NPuzzleComponent implements OnInit, OnDestroy {
   heap: HeapList = 'left';
   results: NPuzzleSolverReport[] = [];
   expansions = new FormControl([]);
+  nPuzzleStyle: AvailableGameType = 'snake'; // 'snake' | 'regular' true | false
+  private readonly subscription: Subscription;
   private sizeHolder = 3;
   private solveMode: 'oneWay' | 'twoWay' = 'twoWay'; // 'oneWay' | 'twoWay' true | false
-  nPuzzleStyle: AvailableGameType = 'snake'; // 'snake' | 'regular' true | false
 
   constructor(
     private readonly zone: NgZone,

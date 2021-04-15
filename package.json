@@ -9,7 +9,9 @@
     "lint": "ng lint",
     "e2e": "ng e2e",
     "pages": "ng build --prod --base-href \"https://Xel4ek.github.io/n-puzzle/\" && npx angular-cli-ghpages --dir=dist/n-puzzle",
-    "pritter" : "prettier --check \"src/**/*.ts\""
+    "pritter" : "prettier --check \"src/**/*.ts\"",
+    "evaluation": "ng build --prod --base-href http://localhost/21-school/site/"
+
   },
   "private": true,
   "dependencies": {

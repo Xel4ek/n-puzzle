@@ -13,12 +13,13 @@ import { NPuzzleGenerator } from '@vendor/n-puzzle/NPuzzleGenerator';
 import { MappedNPuzzle, NPuzzle } from '@vendor/n-puzzle/NPuzzle';
 import {
   ALGORITHMS_MAP,
-  EXPLANATIONS_MAP,
+  EXPANSIONS_MAP,
 } from '@components/n-puzzle/n-puzzle.component';
 import { NPuzzlerService } from '@services/n-puzzler/npuzzler.service';
 import { ModeService } from '@services/mode/mode.service';
 import { map } from 'rxjs/operators';
 import { Subscription } from 'rxjs';
+import { AvailableGameType } from '@vendor/n-puzzle/puzzle.interfaces';
 
 @Component({
   selector: 'app-n-puzzle-game[size]',
@@ -27,6 +28,7 @@ import { Subscription } from 'rxjs';
 })
 export class NPuzzleGameComponent implements OnInit, OnChanges, OnDestroy {
   @Input() size!: number;
+  @Input() nPuzzleStyle!: AvailableGameType;
   puzzle?: NPuzzle;
   game?: number[];
   gamePuzzle?: NPuzzle;
@@ -35,10 +37,10 @@ export class NPuzzleGameComponent implements OnInit, OnChanges, OnDestroy {
   target?: string;
   solved = false;
   algorithmsMap = Object.entries(ALGORITHMS_MAP);
-  expansionsMap = Object.entries(EXPLANATIONS_MAP);
+  expansionsMap = Object.entries(EXPANSIONS_MAP);
   private readonly subscription: Subscription;
   @Output() solveIt = new EventEmitter<NPuzzle>();
-  private mode: 'regular' | 'snake' = 'snake';
+  private mode: AvailableGameType = 'snake';
 
   constructor(
     private readonly elementRef: ElementRef,

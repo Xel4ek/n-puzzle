@@ -3,16 +3,28 @@ import { fromEvent, Subscription } from 'rxjs';
 import { filter, first, map, mergeMap, toArray } from 'rxjs/operators';
 import { MappedNPuzzle, NPuzzle } from '@vendor/n-puzzle/NPuzzle';
 
-import { NPuzzleSolver, NPuzzleSolverReport, } from '@vendor/n-puzzle/NPuzzleSolver';
+import {
+  NPuzzleSolver,
+  NPuzzleSolverReport,
+} from '@vendor/n-puzzle/NPuzzleSolver';
 import { LeftHeap } from '@vendor/heap/left-heap/LeftHeap';
 import { DataHolderService } from '@services/data-holder/data-holder.service';
-import { LINEAR_CONFLICT, MANHATTAN, WRONG_PLACE, } from '@vendor/n-puzzle/strategy';
-import { Expansion, Strategy } from '@vendor/n-puzzle/puzzle.interfaces';
+import {
+  LINEAR_CONFLICT,
+  MANHATTAN,
+  WRONG_PLACE,
+} from '@vendor/n-puzzle/strategy';
+import {
+  AvailableGameType,
+  Expansion,
+  ExpansionFactory,
+  Strategy,
+} from '@vendor/n-puzzle/puzzle.interfaces';
 import { Heap } from '@vendor/heap/binary-heap/heap';
 import { NPuzzleUploadFileFilter } from '@vendor/n-puzzle/NPuzzleUploadFileFilter';
 import { FormControl } from '@angular/forms';
-import { ModeService } from "@services/mode/mode.service";
-import { NPuzzlerService } from "@services/n-puzzler/npuzzler.service";
+import { ModeService } from '@services/mode/mode.service';
+import { NPuzzlerService } from '@services/n-puzzler/npuzzler.service';
 
 type AlgorithmList = 'manhattan' | 'wrongPlace';
 export const ALGORITHMS_MAP: {
@@ -24,8 +36,8 @@ export const ALGORITHMS_MAP: {
 type HeapList = 'left' | 'binary';
 
 type ExpansionList = 'linearConflict';
-export const EXPLANATIONS_MAP: {
-  [key in ExpansionList]: Expansion<NPuzzle | MappedNPuzzle>;
+export const EXPANSIONS_MAP: {
+  [key in ExpansionList]: ExpansionFactory<NPuzzle | MappedNPuzzle>;
 } = {
   linearConflict: LINEAR_CONFLICT,
 };
@@ -41,14 +53,14 @@ export class NPuzzleComponent implements OnInit, OnDestroy {
   calculated = false;
   algorithm: AlgorithmList = 'manhattan';
   expansionsKey: { key: ExpansionList; title: string }[] = [
-    {key: 'linearConflict', title: 'Linear Conflict'},
+    { key: 'linearConflict', title: 'Linear Conflict' },
   ];
   heap: HeapList = 'left';
   results: NPuzzleSolverReport[] = [];
   expansions = new FormControl([]);
   private sizeHolder = 3;
   private solveMode: 'oneWay' | 'twoWay' = 'twoWay'; // 'oneWay' | 'twoWay' true | false
-  private nPuzzleStyle: 'snake' | 'regular' = 'snake'; // 'snake' | 'regular' true | false
+  nPuzzleStyle: AvailableGameType = 'snake'; // 'snake' | 'regular' true | false
 
   constructor(
     private readonly zone: NgZone,
@@ -56,10 +68,15 @@ export class NPuzzleComponent implements OnInit, OnDestroy {
     private readonly modeService: ModeService,
     private readonly nPuzzlerService: NPuzzlerService
   ) {
-    this.subscription = this.modeService.style().pipe(map((style) => {
-      this.solveMode = style.solveStyle ? 'twoWay' : 'oneWay';
-      this.nPuzzleStyle = style.nPuzzleStyle ? 'snake' : 'regular';
-    })).subscribe();
+    this.subscription = this.modeService
+      .style()
+      .pipe(
+        map((style) => {
+          this.solveMode = style.solveStyle ? 'twoWay' : 'oneWay';
+          this.nPuzzleStyle = style.nPuzzleStyle ? 'snake' : 'regular';
+        })
+      )
+      .subscribe();
   }
 
   get size(): number {
@@ -73,8 +90,7 @@ export class NPuzzleComponent implements OnInit, OnDestroy {
     }
   }
 
-  ngOnInit(): void {
-  }
+  ngOnInit(): void {}
 
   uploadFile(fileList: FileList | null): void {
     if (!fileList || !fileList.length) {
@@ -121,8 +137,7 @@ export class NPuzzleComponent implements OnInit, OnDestroy {
     this.solver(puzzle);
   }
 
-  ngOnDestroy(): void {
-  }
+  ngOnDestroy(): void {}
 
   private solver(puzzle: NPuzzle): void {
     if (this.calculated) {
@@ -137,14 +152,14 @@ export class NPuzzleComponent implements OnInit, OnDestroy {
         LeftHeap,
         {
           ...ALGORITHMS_MAP[this.algorithm],
-          expansion: this.expansions.value.map(
-            (expansion: ExpansionList) => EXPLANATIONS_MAP[expansion]
+          expansion: this.expansions.value.map((expansion: ExpansionList) =>
+            EXPANSIONS_MAP[expansion](this.nPuzzleStyle)
           ),
         },
         sourceInstance,
         targetInstance,
         this.solveMode,
-        this.nPuzzleStyle,
+        this.nPuzzleStyle
       );
     }
     if (this.heap === 'binary') {
@@ -152,8 +167,8 @@ export class NPuzzleComponent implements OnInit, OnDestroy {
         Heap,
         {
           ...ALGORITHMS_MAP[this.algorithm],
-          expansion: this.expansions.value.map(
-            (expansion: ExpansionList) => EXPLANATIONS_MAP[expansion]
+          expansion: this.expansions.value.map((expansion: ExpansionList) =>
+            EXPANSIONS_MAP[expansion](this.nPuzzleStyle)
           ),
         },
         sourceInstance,

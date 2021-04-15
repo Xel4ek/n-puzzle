@@ -14,9 +14,9 @@ export interface AverageResults {
   totalNodes: number;
   len: number;
 }
-
+export type AvailableGameType = 'snake' | 'regular';
 export type Expansion<T> = (current: T, target: T) => number;
-
+export type ExpansionFactory<T> = (mode: AvailableGameType) => Expansion<T>;
 export interface Strategy<T> {
   goalH: number;
   expansion: Expansion<T>[];

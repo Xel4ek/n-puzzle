@@ -21,6 +21,7 @@ export interface NPuzzleSolverReport {
 }
 type Actions = 'l' | 'r' | 'd' | 'u';
 export class NPuzzleSolver<T extends HeapInterface<P>, P extends NPuzzle> {
+  private readonly openNodes = new Set<string>();
   constructor(
     private readonly heapClass: new () => T,
     private readonly strategyConfig: Strategy<P>,
@@ -113,11 +114,8 @@ export class NPuzzleSolver<T extends HeapInterface<P>, P extends NPuzzle> {
           const priority =
             child.history.length + strategy.h(child, this.targetInstance);
           if (priority <= strategy.bound(child)) {
-          this.implementsNodeCount++;
-          this.priorityQueue.insert(
-            priority,
-            child
-          );
+            this.implementsNodeCount++;
+            this.priorityQueue.insert(priority, child);
           }
         }
       }
@@ -222,6 +220,8 @@ export class NPuzzleSolver<T extends HeapInterface<P>, P extends NPuzzle> {
     selfHolder.set(entity.instance.join(' '), entity.history);
     for (const child of this.strategy.successors(entity)) {
       const label = child.instance.join(' ');
+      if (this.openNodes.has(label)) { continue; }
+      this.openNodes.add(label);
       if (otherHolder.has(label)) {
         return [child, otherHolder.get(label)];
       }

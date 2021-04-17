@@ -1,6 +1,6 @@
 {
   "configVersion": 1,
-  "timestamp": 1618499728752,
+  "timestamp": 1618696071847,
   "index": "https://Xel4ek.github.io/n-puzzle/index.html",
   "assetGroups": [
     {
@@ -11,13 +11,13 @@
         "ignoreVary": true
       },
       "urls": [
-        "https://Xel4ek.github.io/n-puzzle/4.a00b9839d622bd1c2190.js",
+        "https://Xel4ek.github.io/n-puzzle/4.08c7301645d90d5b8369.js",
         "https://Xel4ek.github.io/n-puzzle/favicon.ico",
         "https://Xel4ek.github.io/n-puzzle/index.html",
         "https://Xel4ek.github.io/n-puzzle/main.153a4583cd1351276b74.js",
         "https://Xel4ek.github.io/n-puzzle/manifest.webmanifest",
         "https://Xel4ek.github.io/n-puzzle/polyfills.8c151b8375e767ff858f.js",
-        "https://Xel4ek.github.io/n-puzzle/runtime.9c67572eb5f5a02857a8.js",
+        "https://Xel4ek.github.io/n-puzzle/runtime.b969f9bab74beaaa5d5e.js",
         "https://Xel4ek.github.io/n-puzzle/styles.a091202ad6f01d874bd2.css"
       ],
       "patterns": []
@@ -47,7 +47,7 @@
   ],
   "dataGroups": [],
   "hashTable": {
-    "https://Xel4ek.github.io/n-puzzle/4.a00b9839d622bd1c2190.js": "f3507545526684785c9e8ac98bd36afb1f9be640",
+    "https://Xel4ek.github.io/n-puzzle/4.08c7301645d90d5b8369.js": "3061cba802151bfd0f84bda6d55d50356d57d5a1",
     "https://Xel4ek.github.io/n-puzzle/assets/47d92cdf01.js": "5f4285dfff4cc5012d906fe5f7018421077ba069",
     "https://Xel4ek.github.io/n-puzzle/assets/icons/android-chrome-192x192.png": "01b9e5422c574cbc59f9bbf3fc1fb3299eae292e",
     "https://Xel4ek.github.io/n-puzzle/assets/icons/android-chrome-384x384.png": "51bc3b21475f1cdc25bdd8985ff612552a5c9305",
@@ -60,11 +60,11 @@
     "https://Xel4ek.github.io/n-puzzle/assets/icons/safari-pinned-tab.svg": "aa50f6606472081259e00137daf847fcac145a55",
     "https://Xel4ek.github.io/n-puzzle/assets/icons/site.webmanifest": "1b9d738696242561c5cc7c0f235c55ab9bbc6ab9",
     "https://Xel4ek.github.io/n-puzzle/favicon.ico": "a2a4b2a64976384ad80fc837f2780b8468b3fdc3",
-    "https://Xel4ek.github.io/n-puzzle/index.html": "5f57c8dc7ab68642d4533204a8b50a7d93ba1dae",
+    "https://Xel4ek.github.io/n-puzzle/index.html": "e0007a77ce97a79a3f9423f9815ff082e28f95be",
     "https://Xel4ek.github.io/n-puzzle/main.153a4583cd1351276b74.js": "2f6c10a224339cf62300a2fc20dcfbfe035036ff",
     "https://Xel4ek.github.io/n-puzzle/manifest.webmanifest": "d696d0dfb86eed2c2069a9542489a7f24d2798a7",
     "https://Xel4ek.github.io/n-puzzle/polyfills.8c151b8375e767ff858f.js": "763cd3b34dfa4600ebb9d9588ec7116988e98920",
-    "https://Xel4ek.github.io/n-puzzle/runtime.9c67572eb5f5a02857a8.js": "1d365cb0981e0437daabc60220b6406533cd68e9",
+    "https://Xel4ek.github.io/n-puzzle/runtime.b969f9bab74beaaa5d5e.js": "e4c0df44d49fbe1df0075ef84748817ec6743d05",
     "https://Xel4ek.github.io/n-puzzle/styles.a091202ad6f01d874bd2.css": "b1848341e440a3708220ac52c058e9c334614457"
   },
   "navigationUrls": [

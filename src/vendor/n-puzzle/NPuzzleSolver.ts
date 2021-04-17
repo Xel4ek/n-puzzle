@@ -21,7 +21,6 @@ export interface NPuzzleSolverReport {
 }
 type Actions = 'l' | 'r' | 'd' | 'u';
 export class NPuzzleSolver<T extends HeapInterface<P>, P extends NPuzzle> {
-  private readonly openNodes = new Set<string>();
   constructor(
     private readonly heapClass: new () => T,
     private readonly strategyConfig: Strategy<P>,
@@ -93,6 +92,7 @@ export class NPuzzleSolver<T extends HeapInterface<P>, P extends NPuzzle> {
 
   private simplifier(): P | undefined {
     const holder = new Set<string>();
+    const openNodes = new Set<string>();
     const strategy = new StrategyFactory<P>(this.strategyConfig);
     this.sourceInstance.isTarget = strategy.isGoal(
       this.sourceInstance,
@@ -106,7 +106,9 @@ export class NPuzzleSolver<T extends HeapInterface<P>, P extends NPuzzle> {
       this.closedNodes++;
       holder.add(entity.instance.join(' '));
       for (const child of strategy.successors(entity)) {
-        if (!holder.has(child.instance.join(' '))) {
+        const label = child.instance.join(' ');
+        if (!holder.has(label) && !openNodes.has(label)) {
+          openNodes.add(label);
           child.isTarget = strategy.isGoal(child, this.targetInstance);
           if (child.isTarget || strategy.hybrid(child)) {
             return child;
@@ -125,6 +127,7 @@ export class NPuzzleSolver<T extends HeapInterface<P>, P extends NPuzzle> {
 
   private simpleSolve(sourceInstance: P, secondPhase = false): void {
     this.priorityQueue.clear();
+    const openNodes = new Set<string>();
     const strategy = new StrategyFactory<P>(this.strategyConfig, secondPhase);
     const holder = new Set<string>();
     sourceInstance.isTarget = strategy.isGoal(
@@ -139,7 +142,9 @@ export class NPuzzleSolver<T extends HeapInterface<P>, P extends NPuzzle> {
       this.closedNodes++;
       holder.add(entity.instance.join(' '));
       for (const child of strategy.successors(entity)) {
-        if (!holder.has(child.instance.join(' '))) {
+        const label = child.instance.join(' ');
+        if (!holder.has(label) && !openNodes.has(label)) {
+          openNodes.add(label);
           this.implementsNodeCount++;
           child.isTarget = strategy.isGoal(child, this.targetInstance);
           if (child.isTarget) {
@@ -154,15 +159,16 @@ export class NPuzzleSolver<T extends HeapInterface<P>, P extends NPuzzle> {
       }
     }
   }
-
   private twoWaySearch(): void {
     const strategy = new StrategyFactory<P>(this.strategyConfig);
+    const forwardOpenNodes = new Set<string>();
     const forwardHolder = new Map<string, string>();
     const forwardQueue = new PriorityQueue<T, P>(this.heapClass);
     forwardQueue.insert(
       this.strategy.h(this.sourceInstance, this.targetInstance),
       { ...this.sourceInstance }
     );
+    const backwardOpenNodes = new Set<string>();
     const backwardHolder = new Map<string, string>();
     const backwardQueue = new PriorityQueue<T, P>(this.heapClass);
     backwardQueue.insert(
@@ -180,12 +186,14 @@ export class NPuzzleSolver<T extends HeapInterface<P>, P extends NPuzzle> {
           forwardHolder,
           backwardHolder,
           forwardQueue,
+          forwardOpenNodes,
           this.targetInstance
         ),
         this.searchThread(
           backwardHolder,
           forwardHolder,
           backwardQueue,
+          backwardOpenNodes,
           this.sourceInstance
         ),
       ];
@@ -210,6 +218,7 @@ export class NPuzzleSolver<T extends HeapInterface<P>, P extends NPuzzle> {
     selfHolder: Map<string, string>,
     otherHolder: Map<string, string>,
     priorityQueue: PriorityQueue<T, P>,
+    openNodes: Set<string>,
     targetInstance: P
   ): [NPuzzle, string | undefined] | number {
     const entity = priorityQueue.pop();
@@ -220,12 +229,11 @@ export class NPuzzleSolver<T extends HeapInterface<P>, P extends NPuzzle> {
     selfHolder.set(entity.instance.join(' '), entity.history);
     for (const child of this.strategy.successors(entity)) {
       const label = child.instance.join(' ');
-      if (this.openNodes.has(label)) { continue; }
-      this.openNodes.add(label);
       if (otherHolder.has(label)) {
         return [child, otherHolder.get(label)];
       }
-      if (!selfHolder.has(label)) {
+      if (!selfHolder.has(label) && !openNodes.has(label)) {
+        openNodes.add(label);
         this.implementsNodeCount++;
         // child.isTarget = strategy.isGoal(child, this.targetInstance);
         priorityQueue.insert(
